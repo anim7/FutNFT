@@ -13,6 +13,22 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "LinkTokenInterface",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.LinkTokenInterface__factory>;
+    getContractFactory(
+      name: "VRFCoordinatorV2Interface",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFCoordinatorV2Interface__factory>;
+    getContractFactory(
+      name: "VRFConsumerBaseV2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFConsumerBaseV2__factory>;
+    getContractFactory(
+      name: "Ownable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Ownable__factory>;
+    getContractFactory(
       name: "ERC721",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721__factory>;
@@ -45,14 +61,46 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
-      name: "Greeter",
+      name: "FutNFT",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Greeter__factory>;
+    ): Promise<Contracts.FutNFT__factory>;
     getContractFactory(
-      name: "Token",
+      name: "FutNFTMatch",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Token__factory>;
+    ): Promise<Contracts.FutNFTMatch__factory>;
+    getContractFactory(
+      name: "FutNFTTraining",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FutNFTTraining__factory>;
+    getContractFactory(
+      name: "FutNFTTransfer",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FutNFTTransfer__factory>;
+    getContractFactory(
+      name: "VRFv2Consumer",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFv2Consumer__factory>;
 
+    getContractAt(
+      name: "LinkTokenInterface",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.LinkTokenInterface>;
+    getContractAt(
+      name: "VRFCoordinatorV2Interface",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFCoordinatorV2Interface>;
+    getContractAt(
+      name: "VRFConsumerBaseV2",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFConsumerBaseV2>;
+    getContractAt(
+      name: "Ownable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Ownable>;
     getContractAt(
       name: "ERC721",
       address: string,
@@ -94,15 +142,30 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
-      name: "Greeter",
+      name: "FutNFT",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Greeter>;
+    ): Promise<Contracts.FutNFT>;
     getContractAt(
-      name: "Token",
+      name: "FutNFTMatch",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Token>;
+    ): Promise<Contracts.FutNFTMatch>;
+    getContractAt(
+      name: "FutNFTTraining",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FutNFTTraining>;
+    getContractAt(
+      name: "FutNFTTransfer",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FutNFTTransfer>;
+    getContractAt(
+      name: "VRFv2Consumer",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFv2Consumer>;
 
     // default types
     getContractFactory(
