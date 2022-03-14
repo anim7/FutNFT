@@ -19,7 +19,7 @@ async function main() {
 
   await futnft.deployed();
 
-  console.log("Greeter deployed to:", futnft.address);
+  console.log("FutNFT project deployed to:", futnft.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -35,11 +35,15 @@
     "test": "npx hardhat test",
     "node": "npx hardhat node",
     "dev": "npx hardhat run --network localhost scripts/deploy.ts",
-    "matic": "npx hardhat compile && npx hardhat run scripts/deploy.ts --network matic"
+    "matic": "npx hardhat run scripts/deploy.ts --network matic",
+    "rinkeby": "npx hardhat run scripts/deploy.ts --network rinkeby",
+    "localhost": "npx hardhat run scripts/deploy.ts --network localhost",
+    "ropsten": "npx hardhat run scripts/deploy.ts --network ropsten"
   },
   "dependencies": {
     "@chainlink/contracts": "^0.4.0",
     "@openzeppelin/contracts": "^4.5.0",
+    "handlebars": "^4.7.7",
     "nft.storage": "^6.0.2",
     "protobufjs": "^6.11.2"
   }

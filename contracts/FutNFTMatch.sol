@@ -7,8 +7,8 @@ import "./VRFv2Consumer.sol";
 /// @title FutNFTMatch
 /// @author Anish Pandit
 /// @notice This contract can be used to compete with other users' teams
-/// @dev Can a substitute function to substitute players during a match
-contract FutNFTMatch is FutNFTTransfer, VRFv2Consumer {
+/// @dev Can a substitute function to substitute players during a match add VRFv2Consumer
+contract FutNFTMatch is FutNFTTransfer {
     /// @notice The percent of level which will be considered if the player is in a suitable position and not preferred position
     uint256 public levelPercentSuitablePosition;
 
@@ -47,10 +47,10 @@ contract FutNFTMatch is FutNFTTransfer, VRFv2Consumer {
         _;
     }
 
-    modifier onlyOwner() override(Ownable, VRFv2Consumer) {
-        require(owner == msg.sender);
-        _;
-    }
+    // modifier onlyOwner() override(Ownable, VRFv2Consumer) {
+    //     require(owner == msg.sender);
+    //     _;
+    // }
 
     /// @notice sets the formationToPositions mapping
     constructor() {
@@ -176,12 +176,12 @@ contract FutNFTMatch is FutNFTTransfer, VRFv2Consumer {
         } else {
             winProbability = 50 - ((opponentTeamRating - teamRating) * 3);
         }
-        requestRandomWords();
-        uint256[] memory randomWords;
-        randomWords[0] = 1;
-        randomWords[1] = 2;
-        randomWords[2] = 3;
-        randomWords[3] = 4;
-        fulfillRandomWords(requestId, randomWords);
+        // requestRandomWords();
+        // uint256[] memory randomWords;
+        // randomWords[0] = 1;
+        // randomWords[1] = 2;
+        // randomWords[2] = 3;
+        // randomWords[3] = 4;
+        // fulfillRandomWords(requestId, randomWords);
     }
 }

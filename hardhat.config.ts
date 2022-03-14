@@ -43,6 +43,10 @@ const config = {
       url: "https://rpc-mumbai.maticvigil.com",
       accounts: [process.env.PRIVATE_KEY],
     },
+    rinkeby: {
+      url: "https://rinkeby.arbitrum.io/rpc",
+      accounts: [process.env.PRIVATE_KEY],
+    },
   },
   paths: {
     tests: "./test",

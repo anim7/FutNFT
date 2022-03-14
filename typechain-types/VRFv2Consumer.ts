@@ -20,39 +20,21 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface VRFv2ConsumerInterface extends utils.Interface {
   contractName: "VRFv2Consumer";
   functions: {
-    "randomWords(uint256)": FunctionFragment;
     "rawFulfillRandomWords(uint256,uint256[])": FunctionFragment;
     "requestId()": FunctionFragment;
-    "requestRandomWords()": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "randomWords",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "rawFulfillRandomWords",
     values: [BigNumberish, BigNumberish[]]
   ): string;
   encodeFunctionData(functionFragment: "requestId", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "requestRandomWords",
-    values?: undefined
-  ): string;
 
-  decodeFunctionResult(
-    functionFragment: "randomWords",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "rawFulfillRandomWords",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "requestId", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "requestRandomWords",
-    data: BytesLike
-  ): Result;
 
   events: {};
 }
@@ -85,11 +67,6 @@ export interface VRFv2Consumer extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    randomWords(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     rawFulfillRandomWords(
       requestId: BigNumberish,
       randomWords: BigNumberish[],
@@ -97,16 +74,7 @@ export interface VRFv2Consumer extends BaseContract {
     ): Promise<ContractTransaction>;
 
     requestId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    requestRandomWords(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
   };
-
-  randomWords(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   rawFulfillRandomWords(
     requestId: BigNumberish,
@@ -116,16 +84,7 @@ export interface VRFv2Consumer extends BaseContract {
 
   requestId(overrides?: CallOverrides): Promise<BigNumber>;
 
-  requestRandomWords(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   callStatic: {
-    randomWords(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     rawFulfillRandomWords(
       requestId: BigNumberish,
       randomWords: BigNumberish[],
@@ -133,18 +92,11 @@ export interface VRFv2Consumer extends BaseContract {
     ): Promise<void>;
 
     requestId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    requestRandomWords(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
-    randomWords(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     rawFulfillRandomWords(
       requestId: BigNumberish,
       randomWords: BigNumberish[],
@@ -152,18 +104,9 @@ export interface VRFv2Consumer extends BaseContract {
     ): Promise<BigNumber>;
 
     requestId(overrides?: CallOverrides): Promise<BigNumber>;
-
-    requestRandomWords(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    randomWords(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     rawFulfillRandomWords(
       requestId: BigNumberish,
       randomWords: BigNumberish[],
@@ -171,9 +114,5 @@ export interface VRFv2Consumer extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     requestId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    requestRandomWords(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
   };
 }
