@@ -42,6 +42,8 @@ const config = {
     matic: {
       url: "https://rpc-mumbai.maticvigil.com",
       accounts: [process.env.PRIVATE_KEY],
+      gas: 2100000,
+      gasPrice: 8000000000,
     },
     rinkeby: {
       url: "https://rinkeby.arbitrum.io/rpc",

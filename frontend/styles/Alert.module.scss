@@ -1,0 +1,23 @@
+@import "mixins";
+
+.alert {
+  @include flexContainer(center, center, column, nowrap);
+  display: none;
+  transition: display 1s ease-out;
+  z-index: 12;
+  padding: 0.3rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  position: absolute;
+  left: 50%;
+  top: 3rem;
+  transform: translateX(-50%);
+  border-radius: 0.4rem;
+  button {
+    margin-top: 0.2rem;
+    background-color: orange;
+    border: 0.05rem solid black;
+    border-radius: 0.3rem;
+    padding: 0.1rem;
+    cursor: pointer;
+  }
+}

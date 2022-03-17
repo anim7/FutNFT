@@ -2,28 +2,14 @@
 pragma solidity ^0.8.12;
 
 import "./FutNFTTransfer.sol";
-import "./VRFv2Consumer.sol";
+import "./VRFConsumer.sol";
 
-/// @title FutNFTMatch
-/// @author Anish Pandit
-/// @notice This contract can be used to compete with other users' teams
-/// @dev Can a substitute function to substitute players during a match add VRFv2Consumer
-contract FutNFTMatch is FutNFTTransfer {
-    /// @notice The percent of level which will be considered if the player is in a suitable position and not preferred position
+contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
     uint256 public levelPercentSuitablePosition;
-
-    /// @notice The percent of level which will be considered if the player is not in a preferred or suitable position
     uint256 public levelPercentNoPosition;
-
-    /// @notice This stores the positions avaiable in a formation
-    /// @dev The key is the formation the value is an array of strings containing all the formations
     mapping(string => string[]) formationToPositions;
-
-    /// @notice This stores the linups set by users
-    /// @dev The key is the address of the owner and the value is the linup
     mapping(address => LineUp) lineUps;
 
-    /// @notice LinUp struct to store linups
     struct LineUp {
         uint256[11] playerIds;
         string[11] positions;
@@ -31,8 +17,6 @@ contract FutNFTMatch is FutNFTTransfer {
         bool isValid;
     }
 
-    /// @notice This checks whether the players in the array are owned by the sender of the msg
-    /// @param _playerIds uint array of ids of players
     modifier playersOwned(uint256[11] memory _playerIds) {
         for (uint256 i = 0; i < _playerIds.length; i++) {
             require(ownerOf(_playerIds[i]) == msg.sender);
@@ -40,8 +24,6 @@ contract FutNFTMatch is FutNFTTransfer {
         _;
     }
 
-    /// @notice Checks whether the lineup is set
-    /// @param _owner The address of the owner of the team
     modifier lineUpSet(address _owner) {
         require(lineUps[_owner].isValid, "Linup not set");
         _;
@@ -52,7 +34,6 @@ contract FutNFTMatch is FutNFTTransfer {
     //     _;
     // }
 
-    /// @notice sets the formationToPositions mapping
     constructor() {
         formationToPositions["4-3-3"] = [
             "GK",
@@ -69,8 +50,6 @@ contract FutNFTMatch is FutNFTTransfer {
         ];
     }
 
-    /// @notice Sets the level percentage for suitable position
-    /// @param _percent The uint value for percent
     function setLevelPercentSuitablePosition(uint256 _percent)
         public
         onlyOwner
@@ -78,17 +57,10 @@ contract FutNFTMatch is FutNFTTransfer {
         levelPercentSuitablePosition = _percent;
     }
 
-    /// @notice Sets the level percentage for no position
-    /// @param _percent The uint value for percent
     function setLevelPercentNoPosition(uint256 _percent) public onlyOwner {
         levelPercentNoPosition = _percent;
     }
 
-    /// @notice Sets the lineup
-    /// @param _playerIds The uint ids of 11 players in the lineup
-    /// @param _positions The positions of the 11 players in the lineup
-    /// @param _formation The formation the players are playing in
-    /// @return teamRating The average level of the team after the linup is set
     function setLineUp(
         uint256[11] memory _playerIds,
         string[11] memory _positions,
@@ -98,9 +70,6 @@ contract FutNFTMatch is FutNFTTransfer {
         return _getTeamRating(msg.sender);
     }
 
-    /// @notice Gets the average level of the team
-    /// @param _owner The address of the owner of the team
-    /// @return teamRating The average level of the team
     function _getTeamRating(address _owner)
         internal
         view
@@ -117,10 +86,6 @@ contract FutNFTMatch is FutNFTTransfer {
         return sum / count;
     }
 
-    /// @notice Gets the level of player after checking the position
-    /// @param _lineup The lineup
-    /// @param _arrayPosition The index in the array
-    /// @return level The level of the player
     function _getPlayerLevel(LineUp memory _lineup, uint256 _arrayPosition)
         internal
         view
@@ -142,10 +107,6 @@ contract FutNFTMatch is FutNFTTransfer {
         return level;
     }
 
-    /// @notice Gets player level for unpreferred position
-    /// @param _player The player
-    /// @param _position The position the player is playing on
-    /// @return level The level of the player
     function _getPlayerLevelForUnpreferredPosition(
         Player memory _player,
         string memory _position
@@ -176,12 +137,12 @@ contract FutNFTMatch is FutNFTTransfer {
         } else {
             winProbability = 50 - ((opponentTeamRating - teamRating) * 3);
         }
-        // requestRandomWords();
-        // uint256[] memory randomWords;
-        // randomWords[0] = 1;
-        // randomWords[1] = 2;
-        // randomWords[2] = 3;
-        // randomWords[3] = 4;
-        // fulfillRandomWords(requestId, randomWords);
+        getRandomNumber();
+        randomResult = (randomResult % 100) + 1;
+        if (randomResult <= winProbability) {
+            // won
+        } else {
+            // lost
+        }
     }
 }

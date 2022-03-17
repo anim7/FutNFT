@@ -61,6 +61,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "getApproved(uint256)": FunctionFragment;
     "getPlayer(uint256)": FunctionFragment;
     "getPlayerExists(uint256)": FunctionFragment;
+    "getRandomNumber()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "levelPercentNoPosition()": FunctionFragment;
     "levelPercentSuitablePosition()": FunctionFragment;
@@ -73,6 +74,8 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "ownerOf(uint256)": FunctionFragment;
     "play(address)": FunctionFragment;
     "playerToOwner(uint256)": FunctionFragment;
+    "randomResult()": FunctionFragment;
+    "rawFulfillRandomness(bytes32,uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
@@ -115,6 +118,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getRandomNumber",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
@@ -146,6 +153,14 @@ export interface FutNFTMatchInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "playerToOwner",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "randomResult",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "rawFulfillRandomness",
+    values: [BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -236,6 +251,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getRandomNumber",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
@@ -260,6 +279,14 @@ export interface FutNFTMatchInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "play", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "playerToOwner",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "randomResult",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "rawFulfillRandomness",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -446,6 +473,10 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    getRandomNumber(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -493,6 +524,14 @@ export interface FutNFTMatch extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    randomResult(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    rawFulfillRandomness(
+      requestId: BytesLike,
+      randomness: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -632,6 +671,10 @@ export interface FutNFTMatch extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  getRandomNumber(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -671,6 +714,14 @@ export interface FutNFTMatch extends BaseContract {
   ): Promise<ContractTransaction>;
 
   playerToOwner(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  randomResult(overrides?: CallOverrides): Promise<BigNumber>;
+
+  rawFulfillRandomness(
+    requestId: BytesLike,
+    randomness: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -807,6 +858,8 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    getRandomNumber(overrides?: CallOverrides): Promise<string>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -843,6 +896,14 @@ export interface FutNFTMatch extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    randomResult(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rawFulfillRandomness(
+      requestId: BytesLike,
+      randomness: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -1019,6 +1080,10 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getRandomNumber(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1063,6 +1128,14 @@ export interface FutNFTMatch extends BaseContract {
     playerToOwner(
       arg0: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    randomResult(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rawFulfillRandomness(
+      requestId: BytesLike,
+      randomness: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     renounceOwnership(
@@ -1207,6 +1280,10 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getRandomNumber(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1255,6 +1332,14 @@ export interface FutNFTMatch extends BaseContract {
     playerToOwner(
       arg0: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    randomResult(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rawFulfillRandomness(
+      requestId: BytesLike,
+      randomness: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(

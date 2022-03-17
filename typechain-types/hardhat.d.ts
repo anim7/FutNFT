@@ -21,6 +21,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.VRFCoordinatorV2Interface__factory>;
     getContractFactory(
+      name: "VRFConsumerBase",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFConsumerBase__factory>;
+    getContractFactory(
       name: "VRFConsumerBaseV2",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.VRFConsumerBaseV2__factory>;
@@ -77,9 +81,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FutNFTTransfer__factory>;
     getContractFactory(
-      name: "VRFv2Consumer",
+      name: "VRFConsumer",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.VRFv2Consumer__factory>;
+    ): Promise<Contracts.VRFConsumer__factory>;
 
     getContractAt(
       name: "LinkTokenInterface",
@@ -91,6 +95,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.VRFCoordinatorV2Interface>;
+    getContractAt(
+      name: "VRFConsumerBase",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFConsumerBase>;
     getContractAt(
       name: "VRFConsumerBaseV2",
       address: string,
@@ -162,10 +171,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.FutNFTTransfer>;
     getContractAt(
-      name: "VRFv2Consumer",
+      name: "VRFConsumer",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.VRFv2Consumer>;
+    ): Promise<Contracts.VRFConsumer>;
 
     // default types
     getContractFactory(
