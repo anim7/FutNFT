@@ -36,7 +36,7 @@ export declare namespace FutNFT {
     BigNumber,
     number,
     number,
-    number,
+    BigNumber,
     string[],
     string
   ] & {
@@ -45,7 +45,7 @@ export declare namespace FutNFT {
     id: BigNumber;
     age: number;
     level: number;
-    lastUpgrade: number;
+    lastUpgrade: BigNumber;
     suitablePositions: string[];
     imageURI: string;
   };
@@ -59,16 +59,18 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "cooldown()": FunctionFragment;
     "fee()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getListedPlayers()": FunctionFragment;
     "getPlayer(uint256)": FunctionFragment;
     "getPlayerExists(uint256)": FunctionFragment;
+    "getPlayersByOwner(address)": FunctionFragment;
     "getRandomNumber()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "levelPercentNoPosition()": FunctionFragment;
     "levelPercentSuitablePosition()": FunctionFragment;
     "list(uint256)": FunctionFragment;
-    "listedOnMarket(uint256)": FunctionFragment;
+    "listedPlayers(uint256)": FunctionFragment;
     "maxLevel()": FunctionFragment;
-    "mint((string,string,uint256,uint8,uint8,uint32,string[],string))": FunctionFragment;
+    "mint((string,string,uint256,uint8,uint8,uint64,string[],string))": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -110,12 +112,20 @@ export interface FutNFTMatchInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getListedPlayers",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getPlayer",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getPlayerExists",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPlayersByOwner",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "getRandomNumber",
@@ -135,7 +145,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "list", values: [BigNumberish]): string;
   encodeFunctionData(
-    functionFragment: "listedOnMarket",
+    functionFragment: "listedPlayers",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "maxLevel", values?: undefined): string;
@@ -245,9 +255,17 @@ export interface FutNFTMatchInterface extends utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getListedPlayers",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getPlayer", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getPlayerExists",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPlayersByOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -268,7 +286,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "list", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "listedOnMarket",
+    functionFragment: "listedPlayers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "maxLevel", data: BytesLike): Result;
@@ -463,6 +481,8 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+
     getPlayer(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -472,6 +492,11 @@ export interface FutNFTMatch extends BaseContract {
       _id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    getPlayersByOwner(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
 
     getRandomNumber(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -494,10 +519,10 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<[BigNumber]>;
 
     maxLevel(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -661,6 +686,8 @@ export interface FutNFTMatch extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
+
   getPlayer(
     _id: BigNumberish,
     overrides?: CallOverrides
@@ -670,6 +697,11 @@ export interface FutNFTMatch extends BaseContract {
     _id: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  getPlayersByOwner(
+    _owner: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
 
   getRandomNumber(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -690,10 +722,10 @@ export interface FutNFTMatch extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  listedOnMarket(
+  listedPlayers(
     arg0: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<BigNumber>;
 
   maxLevel(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -848,6 +880,8 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
+
     getPlayer(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -857,6 +891,11 @@ export interface FutNFTMatch extends BaseContract {
       _id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    getPlayersByOwner(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
 
     getRandomNumber(overrides?: CallOverrides): Promise<string>;
 
@@ -872,10 +911,10 @@ export interface FutNFTMatch extends BaseContract {
 
     list(_playerId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<BigNumber>;
 
     maxLevel(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1073,10 +1112,17 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<BigNumber>;
+
     getPlayer(_id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     getPlayerExists(
       _id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPlayersByOwner(
+      _owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1099,7 +1145,7 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1270,6 +1316,8 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getPlayer(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -1277,6 +1325,11 @@ export interface FutNFTMatch extends BaseContract {
 
     getPlayerExists(
       _id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPlayersByOwner(
+      _owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1303,7 +1356,7 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

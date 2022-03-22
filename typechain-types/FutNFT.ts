@@ -35,7 +35,7 @@ export declare namespace FutNFT {
     BigNumber,
     number,
     number,
-    number,
+    BigNumber,
     string[],
     string
   ] & {
@@ -44,7 +44,7 @@ export declare namespace FutNFT {
     id: BigNumber;
     age: number;
     level: number;
-    lastUpgrade: number;
+    lastUpgrade: BigNumber;
     suitablePositions: string[];
     imageURI: string;
   };
@@ -56,11 +56,13 @@ export interface FutNFTInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getListedPlayers()": FunctionFragment;
     "getPlayer(uint256)": FunctionFragment;
     "getPlayerExists(uint256)": FunctionFragment;
+    "getPlayersByOwner(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "listedOnMarket(uint256)": FunctionFragment;
-    "mint((string,string,uint256,uint8,uint8,uint32,string[],string))": FunctionFragment;
+    "listedPlayers(uint256)": FunctionFragment;
+    "mint((string,string,uint256,uint8,uint8,uint64,string[],string))": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -88,6 +90,10 @@ export interface FutNFTInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getListedPlayers",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getPlayer",
     values: [BigNumberish]
   ): string;
@@ -96,11 +102,15 @@ export interface FutNFTInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getPlayersByOwner",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "listedOnMarket",
+    functionFragment: "listedPlayers",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -165,9 +175,17 @@ export interface FutNFTInterface extends utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getListedPlayers",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getPlayer", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getPlayerExists",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPlayersByOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -175,7 +193,7 @@ export interface FutNFTInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "listedOnMarket",
+    functionFragment: "listedPlayers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -314,6 +332,8 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+
     getPlayer(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -324,16 +344,21 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    getPlayersByOwner(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<[BigNumber]>;
 
     mint(
       _player: FutNFT.PlayerStruct,
@@ -430,6 +455,8 @@ export interface FutNFT extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
+
   getPlayer(
     _id: BigNumberish,
     overrides?: CallOverrides
@@ -440,16 +467,21 @@ export interface FutNFT extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  getPlayersByOwner(
+    _owner: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  listedOnMarket(
+  listedPlayers(
     arg0: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<BigNumber>;
 
   mint(
     _player: FutNFT.PlayerStruct,
@@ -537,6 +569,8 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
+
     getPlayer(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -547,16 +581,21 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    getPlayersByOwner(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<BigNumber>;
 
     mint(
       _player: FutNFT.PlayerStruct,
@@ -693,10 +732,17 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<BigNumber>;
+
     getPlayer(_id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     getPlayerExists(
       _id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPlayersByOwner(
+      _owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -706,7 +752,7 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -810,6 +856,8 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getPlayer(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -820,13 +868,18 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getPlayersByOwner(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

@@ -36,7 +36,7 @@ export declare namespace FutNFT {
     BigNumber,
     number,
     number,
-    number,
+    BigNumber,
     string[],
     string
   ] & {
@@ -45,7 +45,7 @@ export declare namespace FutNFT {
     id: BigNumber;
     age: number;
     level: number;
-    lastUpgrade: number;
+    lastUpgrade: BigNumber;
     suitablePositions: string[];
     imageURI: string;
   };
@@ -59,12 +59,14 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     "cooldown()": FunctionFragment;
     "fee()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getListedPlayers()": FunctionFragment;
     "getPlayer(uint256)": FunctionFragment;
     "getPlayerExists(uint256)": FunctionFragment;
+    "getPlayersByOwner(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "listedOnMarket(uint256)": FunctionFragment;
+    "listedPlayers(uint256)": FunctionFragment;
     "maxLevel()": FunctionFragment;
-    "mint((string,string,uint256,uint8,uint8,uint32,string[],string))": FunctionFragment;
+    "mint((string,string,uint256,uint8,uint8,uint64,string[],string))": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -98,6 +100,10 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getListedPlayers",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getPlayer",
     values: [BigNumberish]
   ): string;
@@ -106,11 +112,15 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getPlayersByOwner",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "listedOnMarket",
+    functionFragment: "listedPlayers",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "maxLevel", values?: undefined): string;
@@ -191,9 +201,17 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getListedPlayers",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getPlayer", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getPlayerExists",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPlayersByOwner",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -201,7 +219,7 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "listedOnMarket",
+    functionFragment: "listedPlayers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "maxLevel", data: BytesLike): Result;
@@ -361,6 +379,8 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+
     getPlayer(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -371,16 +391,21 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    getPlayersByOwner(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[]]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    ): Promise<[BigNumber]>;
 
     maxLevel(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -503,6 +528,8 @@ export interface FutNFTTraining extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
+
   getPlayer(
     _id: BigNumberish,
     overrides?: CallOverrides
@@ -513,16 +540,21 @@ export interface FutNFTTraining extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  getPlayersByOwner(
+    _owner: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber[]>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  listedOnMarket(
+  listedPlayers(
     arg0: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<boolean>;
+  ): Promise<BigNumber>;
 
   maxLevel(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -636,6 +668,8 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
+
     getPlayer(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -646,16 +680,21 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    getPlayersByOwner(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber[]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<boolean>;
+    ): Promise<BigNumber>;
 
     maxLevel(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -812,10 +851,17 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<BigNumber>;
+
     getPlayer(_id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
     getPlayerExists(
       _id: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPlayersByOwner(
+      _owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -825,7 +871,7 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -955,6 +1001,8 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getListedPlayers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getPlayer(
       _id: BigNumberish,
       overrides?: CallOverrides
@@ -965,13 +1013,18 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getPlayersByOwner(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    listedOnMarket(
+    listedPlayers(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

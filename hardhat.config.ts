@@ -48,6 +48,8 @@ const config = {
     rinkeby: {
       url: "https://rinkeby.arbitrum.io/rpc",
       accounts: [process.env.PRIVATE_KEY],
+      gas: 2100000,
+      gasPrice: 8000000000,
     },
   },
   paths: {

@@ -1,0 +1,5 @@
+@import "mixins";
+
+.sellContainer {
+  @include flexContainer(center, center, row, wrap);
+}

@@ -9,7 +9,7 @@ contract FutNFTTransfer is FutNFTTraining {
 
     modifier listed(uint256 _playerId) {
         require(
-            listedOnMarket[_playerId],
+            listedPlayerIndex[_playerId] != uint256(0),
             "This player is not listed on the market!"
         );
         _;
@@ -17,7 +17,7 @@ contract FutNFTTransfer is FutNFTTraining {
 
     modifier notListed(uint256 _playerId) {
         require(
-            !listedOnMarket[_playerId],
+            listedPlayerIndex[_playerId] == uint256(0),
             "This player is already listed on the market!"
         );
         _;
@@ -26,17 +26,19 @@ contract FutNFTTransfer is FutNFTTraining {
     /// @dev Can use gelato here to automate
     function list(
         uint256 _playerId /*, bool repeatTillSold*/
-    ) external owned(_playerId) notListed(_playerId) {
-        listedOnMarket[_playerId] = true;
+    ) public owned(_playerId) notListed(_playerId) {
+        listedPlayers.push(_playerId);
+        listedPlayerIndex[_playerId] = listedPlayers.length;
         emit Listed(_playerId);
     }
 
     function unlist(uint256 _playerId)
-        external
+        public
         owned(_playerId)
         listed(_playerId)
     {
-        listedOnMarket[_playerId] = false;
+        delete listedPlayers[listedPlayerIndex[_playerId] - 1];
+        listedPlayerIndex[_playerId] = 0;
         emit Unlisted(_playerId);
     }
 
@@ -46,5 +48,7 @@ contract FutNFTTransfer is FutNFTTraining {
         listed(_playerId)
     {
         super.safeTransferFrom(msg.sender, _to, _playerId);
+        playerToOwner[_playerId] = _to;
+        unlist(_playerId);
     }
 }

@@ -2,9 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { LinkTokenInterface } from "./LinkTokenInterface";
-export type { VRFCoordinatorV2Interface } from "./VRFCoordinatorV2Interface";
 export type { VRFConsumerBase } from "./VRFConsumerBase";
-export type { VRFConsumerBaseV2 } from "./VRFConsumerBaseV2";
 export type { Ownable } from "./Ownable";
 export type { ERC721 } from "./ERC721";
 export type { ERC721Enumerable } from "./ERC721Enumerable";
@@ -21,9 +19,7 @@ export type { FutNFTTransfer } from "./FutNFTTransfer";
 export type { VRFConsumer } from "./VRFConsumer";
 
 export { LinkTokenInterface__factory } from "./factories/LinkTokenInterface__factory";
-export { VRFCoordinatorV2Interface__factory } from "./factories/VRFCoordinatorV2Interface__factory";
 export { VRFConsumerBase__factory } from "./factories/VRFConsumerBase__factory";
-export { VRFConsumerBaseV2__factory } from "./factories/VRFConsumerBaseV2__factory";
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
 export { ERC721Enumerable__factory } from "./factories/ERC721Enumerable__factory";

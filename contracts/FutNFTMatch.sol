@@ -140,9 +140,11 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
         getRandomNumber();
         randomResult = (randomResult % 100) + 1;
         if (randomResult <= winProbability) {
-            // won
+            ownerHistory[msg.sender].winCount++;
+            ownerHistory[_opponent].lossCount++;
         } else {
-            // lost
+            ownerHistory[msg.sender].lossCount++;
+            ownerHistory[_opponent].winCount++;
         }
     }
 }

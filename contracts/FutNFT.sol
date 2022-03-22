@@ -13,7 +13,7 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
         uint256 id;
         uint8 age;
         uint8 level;
-        uint32 lastUpgrade;
+        uint64 lastUpgrade;
         string[] suitablePositions;
         string imageURI;
     }
@@ -22,10 +22,13 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
         uint256 winCount;
         uint256 lossCount;
     }
+
     mapping(address => History) ownerHistory;
     mapping(uint256 => Player) players;
     mapping(uint256 => address) public playerToOwner;
-    mapping(uint256 => bool) public listedOnMarket;
+    mapping(uint256 => uint256) listedPlayerIndex;
+    uint256[] public listedPlayers;
+    uint256[] playerIds;
 
     event PlayerAdded(uint256 playerId);
 
@@ -37,8 +40,28 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
 
     constructor() ERC721("FutNFT", "FNFT") {}
 
+    function getListedPlayers() public view returns (uint256[] memory) {
+        return listedPlayers;
+    }
+
     function getPlayer(uint256 _id) public view returns (Player memory) {
         return players[_id];
+    }
+
+    function getPlayersByOwner(address _owner)
+        public
+        view
+        returns (uint256[] memory)
+    {
+        uint256[] memory result;
+        uint256 index = 0;
+        for (uint256 i = 0; i < playerIds.length; i++) {
+            if (playerToOwner[playerIds[i]] == _owner) {
+                result[index] = playerIds[i];
+                index++;
+            }
+        }
+        return result;
     }
 
     function ownerOf(uint256 tokenId)
@@ -57,6 +80,7 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
     function mint(Player memory _player) public onlyOwner {
         require(playerToOwner[_player.id] == address(0), "Player Exists!");
         players[_player.id] = _player;
+        playerIds.push(_player.id);
         playerToOwner[_player.id] = msg.sender;
         _mint(msg.sender, _player.id);
         emit PlayerAdded(_player.id);

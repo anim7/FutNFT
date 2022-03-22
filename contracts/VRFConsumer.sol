@@ -10,7 +10,7 @@ contract VRFConsumer is VRFConsumerBase {
 
     constructor()
         VRFConsumerBase(
-            0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9,
+            0x844ECf0B33EB65e1EC34AEa0d082D39879169890,
             0xa36085F69e2889c224210F603D836748e7dC0088
         )
     {

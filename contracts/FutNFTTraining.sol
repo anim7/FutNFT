@@ -4,7 +4,7 @@ pragma solidity ^0.8.12;
 import "./FutNFT.sol";
 
 contract FutNFTTraining is FutNFT {
-    uint256 public cooldown = 432000 seconds;
+    uint256 public cooldown = 43200 seconds;
     uint256 public fee = 0.001 ether;
     uint256 public maxLevel = 100;
 
