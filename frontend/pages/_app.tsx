@@ -11,6 +11,9 @@ import { abi as futNFTTransferABI } from "../../artifacts/contracts/FutNFTTransf
 import { abi as futNFTMatchABI } from "../../artifacts/contracts/FutNFTMatch.sol/FutNFTMatch.json";
 import { abi as vrfConsumerABI } from "../../artifacts/contracts/VRFConsumer.sol/VRFConsumer.json";
 import { BigNumber, ethers } from "ethers";
+import Loader from "../components/Loader";
+import PlayerInformation from "../components/PlayerInformation";
+import { Player } from "../global/player";
 
 interface Props {
   Component: NextComponentType<NextPageContext, any, {}>;
@@ -25,15 +28,18 @@ interface State {
   futNFTTraining: ethers.Contract;
   futNFTMatch: ethers.Contract;
   vrfConsumer: ethers.Contract;
+  loader: boolean;
+  playerInfo: Player;
+  playerInfoActivated: boolean;
 }
 class App extends React.Component<Props, State> {
-  address = "0x0088b2315E6DfEE90F75Af7292Abf9B13c6b7253";
+  address = "0x4Ce571f618a74B18164dDE8EE3d99134f0B60179";
   constructor(props: Props) {
     super(props);
     const emptyContract = new ethers.Contract(
-      "",
-      "",
-      new ethers.providers.JsonRpcProvider("")
+      this.address,
+      futNFTMatchABI,
+      new ethers.providers.JsonRpcProvider("https://rpc-mumbai.maticvigil.com")
     );
     this.state = {
       account: "0x0",
@@ -43,12 +49,26 @@ class App extends React.Component<Props, State> {
       futNFTTraining: emptyContract,
       futNFTTransfer: emptyContract,
       vrfConsumer: emptyContract,
+      loader: false,
+      playerInfo: {
+        name: "",
+        age: 0,
+        id: 0,
+        imageURI: "",
+        lastUpgrade: 0,
+        level: 0,
+        preferredPosition: "",
+        suitablePositions: [],
+      },
+      playerInfoActivated: false,
     };
   }
 
   async componentDidMount() {
+    this.setLoader(true);
     await this.loadWeb3();
     await this.loadBlockchainData();
+    await this.loadContracts();
     this.setState({ blockchainDataLoaded: true });
     // await this.getRandomNumber();
   }
@@ -69,6 +89,7 @@ class App extends React.Component<Props, State> {
     } else {
       document.getElementById("ethereumAlert")!.style.display = "inline-block";
     }
+    this.setLoader(false);
   }
 
   async loadBlockchainData() {
@@ -135,24 +156,33 @@ class App extends React.Component<Props, State> {
     );
     console.log("Start");
     const vrfConsumerWithSigner = vrfConsumer.connect(signer);
-    const tx = await vrfConsumerWithSigner.getRandomNumber({
-      gasPrice: 30000000000,
+    const tx = await vrfConsumerWithSigner.test({
+      gasPrice: 3000000000,
       gasLimit: 2000000,
     });
     await tx.wait();
-    const result: BigNumber = await vrfConsumer.randomResult();
-    console.log(result.toNumber());
-    console.log("done");
+    console.log(tx);
+
+    setTimeout(async () => {
+      const winner = await vrfConsumer.winner();
+      console.log(winner);
+      const result: BigNumber = await vrfConsumer.randomResult();
+      console.log(result.toNumber());
+      console.log("done");
+    }, 5000);
   }
+
+  setLoader = (loader: boolean) => {
+    this.setState({ loader: loader });
+  };
+
+  setPlayerInfo = (player: Player) => this.setState({ playerInfo: player });
+  setPlayerInfoActivated = (activated: boolean) =>
+    this.setState({ playerInfoActivated: activated });
 
   render() {
     return (
       <>
-        <Alert
-          message="Non-Ethereum browser detected. Consider using MetaMask!"
-          okEnabled={true}
-          id="ethereumAlert"
-        />
         <Head>
           <title>FutNFT</title>
         </Head>
@@ -161,6 +191,18 @@ class App extends React.Component<Props, State> {
           blockchainDataLoaded={this.state.blockchainDataLoaded}
           futNFTMatch={this.state.futNFTMatch}
         />
+        {this.state.loader && <Loader />}
+        <Alert
+          message="Non-Ethereum browser detected. Consider using MetaMask!"
+          okEnabled={true}
+          id="ethereumAlert"
+        />
+        {this.state.playerInfoActivated && (
+          <PlayerInformation
+            player={this.state.playerInfo}
+            setPlayerInfoActivated={this.setPlayerInfoActivated}
+          />
+        )}
         <this.props.Component
           account={this.state.account}
           blockchainDataLoaded={this.state.blockchainDataLoaded}
@@ -169,6 +211,9 @@ class App extends React.Component<Props, State> {
           futNFTTraining={this.state.futNFTTraining}
           futNFTMatch={this.state.futNFTMatch}
           vrfConsumer={this.state.vrfConsumer}
+          setLoader={this.setLoader}
+          setPlayerInfo={this.setPlayerInfo}
+          setPlayerInfoActivated={this.setPlayerInfoActivated}
           {...this.props.pageProps}
         />
       </>

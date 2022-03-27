@@ -23,6 +23,8 @@ export interface VRFConsumerInterface extends utils.Interface {
     "getRandomNumber()": FunctionFragment;
     "randomResult()": FunctionFragment;
     "rawFulfillRandomness(bytes32,uint256)": FunctionFragment;
+    "test()": FunctionFragment;
+    "winner()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -37,6 +39,8 @@ export interface VRFConsumerInterface extends utils.Interface {
     functionFragment: "rawFulfillRandomness",
     values: [BytesLike, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "test", values?: undefined): string;
+  encodeFunctionData(functionFragment: "winner", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "getRandomNumber",
@@ -50,6 +54,8 @@ export interface VRFConsumerInterface extends utils.Interface {
     functionFragment: "rawFulfillRandomness",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "test", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "winner", data: BytesLike): Result;
 
   events: {};
 }
@@ -93,6 +99,12 @@ export interface VRFConsumer extends BaseContract {
       randomness: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    test(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    winner(overrides?: CallOverrides): Promise<[string]>;
   };
 
   getRandomNumber(
@@ -107,6 +119,12 @@ export interface VRFConsumer extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  test(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  winner(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     getRandomNumber(overrides?: CallOverrides): Promise<string>;
 
@@ -117,6 +135,10 @@ export interface VRFConsumer extends BaseContract {
       randomness: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    test(overrides?: CallOverrides): Promise<void>;
+
+    winner(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {};
@@ -133,6 +155,12 @@ export interface VRFConsumer extends BaseContract {
       randomness: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    test(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    winner(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -147,5 +175,11 @@ export interface VRFConsumer extends BaseContract {
       randomness: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    test(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    winner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

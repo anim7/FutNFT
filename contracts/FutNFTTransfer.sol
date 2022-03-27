@@ -23,11 +23,20 @@ contract FutNFTTransfer is FutNFTTraining {
         _;
     }
 
-    /// @dev Can use gelato here to automate
-    function list(
-        uint256 _playerId /*, bool repeatTillSold*/
-    ) public owned(_playerId) notListed(_playerId) {
+    function list(uint256 _playerId, uint256 _price)
+        public
+        owned(_playerId)
+        notListed(_playerId)
+    {
+        for (uint256 i = 0; i < 11; i++) {
+            uint256 playerId = lineUps[msg.sender].playerIds[i];
+            require(
+                playerId != _playerId,
+                "Player is in the lineup, cannot list!"
+            );
+        }
         listedPlayers.push(_playerId);
+        listedPlayersPrices[_playerId] = _price;
         listedPlayerIndex[_playerId] = listedPlayers.length;
         emit Listed(_playerId);
     }
@@ -39,16 +48,21 @@ contract FutNFTTransfer is FutNFTTraining {
     {
         delete listedPlayers[listedPlayerIndex[_playerId] - 1];
         listedPlayerIndex[_playerId] = 0;
+        listedPlayersPrices[_playerId] = 0;
         emit Unlisted(_playerId);
     }
 
-    function transferPlayer(address _to, uint256 _playerId)
+    function transferPlayer(uint256 _playerId)
         external
-        owned(_playerId)
+        payable
         listed(_playerId)
     {
-        super.safeTransferFrom(msg.sender, _to, _playerId);
-        playerToOwner[_playerId] = _to;
+        require(msg.value == listedPlayersPrices[_playerId]);
+        address payable owner = payable(ownerOf(_playerId));
+        (bool _sent, ) = owner.call{value: msg.value}("");
+        require(_sent, "Failed to send");
+        super._transfer(owner, msg.sender, _playerId);
+        playerToOwner[_playerId] = msg.sender;
         unlist(_playerId);
     }
 }

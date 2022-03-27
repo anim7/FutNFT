@@ -18,4 +18,8 @@ a {
   padding: 0;
   border: none;
   color: white;
+  ::selection {
+    background-color: white;
+    color: black;
+  }
 }

@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@metamask/detect-provider": "^1.2.0",
+    "axios": "^0.26.1",
     "eth-rpc-errors": "^4.0.3",
     "ethers": "^5.6.1",
     "next": "^12.1.0",
+    "nft.storage": "^6.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "sass": "^1.49.9"

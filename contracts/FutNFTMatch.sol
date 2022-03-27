@@ -7,15 +7,11 @@ import "./VRFConsumer.sol";
 contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
     uint256 public levelPercentSuitablePosition;
     uint256 public levelPercentNoPosition;
-    mapping(string => string[]) formationToPositions;
-    mapping(address => LineUp) lineUps;
-
-    struct LineUp {
-        uint256[11] playerIds;
-        string[11] positions;
-        string formation;
-        bool isValid;
-    }
+    mapping(string => string[]) public formationToPositions;
+    string[] public formations;
+    string[] public allPositions;
+    uint256 public lineupFee = 0.001 ether;
+    address[] lineupSet;
 
     modifier playersOwned(uint256[11] memory _playerIds) {
         for (uint256 i = 0; i < _playerIds.length; i++) {
@@ -35,19 +31,81 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
     // }
 
     constructor() {
+        formations.push("4-3-3");
         formationToPositions["4-3-3"] = [
             "GK",
             "LB",
             "CB",
             "CB",
             "RB",
-            "CM",
-            "CM",
-            "CM",
-            "LW",
+            "CMF",
+            "CMF",
+            "CMF",
+            "LWF",
             "ST",
-            "RW"
+            "RWF"
         ];
+        formations.push("4-3-3 attack");
+        formationToPositions["4-3-3 attack"] = [
+            "GK",
+            "LB",
+            "CB",
+            "CB",
+            "RB",
+            "CMF",
+            "AMF",
+            "CMF",
+            "RWF",
+            "ST",
+            "LWF"
+        ];
+        allPositions = [
+            "LWF",
+            "ST",
+            "RWF",
+            "CF",
+            "AMF",
+            "CMF",
+            "DMF",
+            "LMF",
+            "RMF",
+            "RB",
+            "LB",
+            "CB",
+            "GK"
+        ];
+    }
+
+    function setLinupFee(uint256 _fee) public onlyOwner {
+        lineupFee = _fee;
+    }
+
+    function getAllFormations() public view returns (string[] memory) {
+        return formations;
+    }
+
+    function getLineup(address _owner) public view returns (LineUp memory) {
+        return lineUps[_owner];
+    }
+
+    function addFormation(string memory formation, string[] memory positions)
+        public
+        onlyOwner
+    {
+        formationToPositions[formation] = positions;
+        formations.push(formation);
+    }
+
+    function getPositionsFromFormation(string memory formation)
+        public
+        view
+        returns (string[] memory)
+    {
+        return formationToPositions[formation];
+    }
+
+    function getAllPositions() public view returns (string[] memory) {
+        return allPositions;
     }
 
     function setLevelPercentSuitablePosition(uint256 _percent)
@@ -65,8 +123,10 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
         uint256[11] memory _playerIds,
         string[11] memory _positions,
         string memory _formation
-    ) external playersOwned(_playerIds) returns (uint256) {
+    ) external payable playersOwned(_playerIds) returns (uint256) {
+        require(msg.value == lineupFee, "Required fee not sent!");
         lineUps[msg.sender] = LineUp(_playerIds, _positions, _formation, true);
+        lineupSet.push(msg.sender);
         return _getTeamRating(msg.sender);
     }
 
@@ -139,12 +199,17 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
         }
         getRandomNumber();
         randomResult = (randomResult % 100) + 1;
+        address payable winner;
         if (randomResult <= winProbability) {
             ownerHistory[msg.sender].winCount++;
             ownerHistory[_opponent].lossCount++;
+            winner = payable(msg.sender);
         } else {
             ownerHistory[msg.sender].lossCount++;
             ownerHistory[_opponent].winCount++;
+            winner = payable(_opponent);
         }
+        (bool sent, ) = winner.call{value: 0.0015 ether}("");
+        require(sent, "Could not complete transaction!");
     }
 }

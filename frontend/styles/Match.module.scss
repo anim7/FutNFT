@@ -1,1 +1,53 @@
 @import "mixins";
+
+.matchContainer {
+  @include flexContainer(center, center, column, nowrap);
+  h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin: 0.5rem 0;
+  }
+  .dropdown {
+    background-color: rgb(80, 0, 80);
+    width: 15rem;
+    text-align: center;
+    font-size: 1.3rem;
+    border-radius: 0.4rem;
+    &:focus {
+      outline: none;
+    }
+  }
+  .selectPlayers {
+    @include flexContainer(center, center, row, wrap);
+    .playerItem {
+      margin: 0.5rem;
+      border: 0.05rem solid rgb(255, 255, 255);
+      .player {
+        cursor: pointer;
+        @include flexContainer(center, center, column, nowrap);
+        background-color: rgb(28, 0, 29);
+        .imageContainer {
+          border-bottom: 0.05rem solid white;
+        }
+      }
+      .positionDropdown {
+        font-size: 1rem;
+        width: 100%;
+        border-radius: 0;
+        margin: 0;
+        cursor: pointer;
+      }
+    }
+  }
+  //   .selectPositions {
+  //     @include flexContainer(center, center, column, nowrap);
+  //     border: 0.05rem solid white;
+  //     margin-bottom: 2rem;
+  //     * {
+  //       font-size: 1.3rem;
+  //     }
+  //     .positionsImageContainer {
+  //       border-bottom: 0.05rem solid white;
+  //     }
+  //   }
+}

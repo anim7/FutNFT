@@ -23,12 +23,22 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
         uint256 lossCount;
     }
 
+    struct LineUp {
+        uint256[11] playerIds;
+        string[11] positions;
+        string formation;
+        bool isValid;
+    }
+
     mapping(address => History) ownerHistory;
     mapping(uint256 => Player) players;
     mapping(uint256 => address) public playerToOwner;
     mapping(uint256 => uint256) listedPlayerIndex;
+    mapping(uint256 => uint256) public listedPlayersPrices;
+    mapping(address => LineUp) public lineUps;
     uint256[] public listedPlayers;
     uint256[] playerIds;
+    uint256 private defaultArrSize = 100;
 
     event PlayerAdded(uint256 playerId);
 
@@ -53,15 +63,22 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
         view
         returns (uint256[] memory)
     {
-        uint256[] memory result;
+        uint256[] memory result = new uint256[](defaultArrSize);
         uint256 index = 0;
         for (uint256 i = 0; i < playerIds.length; i++) {
-            if (playerToOwner[playerIds[i]] == _owner) {
+            if (
+                playerToOwner[playerIds[i]] == _owner &&
+                listedPlayerIndex[playerIds[i]] == 0
+            ) {
                 result[index] = playerIds[i];
                 index++;
             }
         }
         return result;
+    }
+
+    function setDefaultArraySize(uint256 _size) public onlyOwner {
+        defaultArrSize = _size;
     }
 
     function ownerOf(uint256 tokenId)
@@ -101,5 +118,10 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
+    }
+
+    function withdraw() external onlyOwner {
+        (bool sent, ) = msg.sender.call{value: address(this).balance}("");
+        require(sent, "Transaction failed, could not send funds!");
     }
 }

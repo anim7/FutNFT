@@ -5,112 +5,40 @@ import { Player } from "./Player";
 import getPlayersByOwner from "../utils/getPlayersByOwner";
 import { getPlayer } from "../utils/getPlayer";
 import { ethers } from "ethers";
+import Popup from "./Popup";
+import PlayerInformation from "./PlayerInformation";
 
 interface Props {
   account: string;
   futNFTMatch: ethers.Contract;
   futNFT: ethers.Contract;
+  futNFTTransfer: ethers.Contract;
+  setLoader: (loader: boolean) => void;
+  setPlayerInfo: (player: PlayerInterface) => void;
+  setPlayerInfoActivated: (activated: boolean) => void;
 }
 interface State {
   players: PlayerInterface[];
+  popup: boolean;
+  currentPlayer: PlayerInterface;
 }
 
 export class Sell extends Component<Props, State> {
-  players: PlayerInterface[] = [
-    {
-      age: 34,
-      imageURI:
-        "https://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy.ipfs.dweb.link/nft.png",
-      id: 1,
-      level: 20,
-      lastUpgrade: new Date().getTime(),
-      name: "Lionel Messi",
-      preferredPosition: "RWF",
-      suitablePositions: ["ST", "CF", "RMF", "CAM"],
-    },
-    {
-      age: 37,
-      imageURI:
-        "https://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy.ipfs.dweb.link/nft.png",
-      id: 2,
-      level: 17,
-      lastUpgrade: new Date().getTime(),
-      name: "Cristiano Ronaldo",
-      preferredPosition: "ST",
-      suitablePositions: ["LWF", "CF"],
-    },
-    {
-      age: 37,
-      imageURI:
-        "https://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy.ipfs.dweb.link/nft.png",
-      id: 2,
-      level: 17,
-      lastUpgrade: new Date().getTime(),
-      name: "Cristiano Ronaldo",
-      preferredPosition: "ST",
-      suitablePositions: ["LWF", "CF"],
-    },
-    {
-      age: 37,
-      imageURI:
-        "https://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy.ipfs.dweb.link/nft.png",
-      id: 2,
-      level: 17,
-      lastUpgrade: new Date().getTime(),
-      name: "Cristiano Ronaldo",
-      preferredPosition: "ST",
-      suitablePositions: ["LWF", "CF"],
-    },
-    {
-      age: 37,
-      imageURI:
-        "https://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy.ipfs.dweb.link/nft.png",
-      id: 2,
-      level: 17,
-      lastUpgrade: new Date().getTime(),
-      name: "Cristiano Ronaldo",
-      preferredPosition: "ST",
-      suitablePositions: ["LWF", "CF"],
-    },
-    {
-      age: 37,
-      imageURI:
-        "https://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy.ipfs.dweb.link/nft.png",
-      id: 2,
-      level: 17,
-      lastUpgrade: new Date().getTime(),
-      name: "Cristiano Ronaldo",
-      preferredPosition: "ST",
-      suitablePositions: ["LWF", "CF"],
-    },
-    {
-      age: 37,
-      imageURI:
-        "https://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy.ipfs.dweb.link/nft.png",
-      id: 2,
-      level: 17,
-      lastUpgrade: new Date().getTime(),
-      name: "Cristiano Ronaldo",
-      preferredPosition: "ST",
-      suitablePositions: ["LWF", "CF"],
-    },
-    {
-      age: 37,
-      imageURI:
-        "https://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy.ipfs.dweb.link/nft.png",
-      id: 2,
-      level: 17,
-      lastUpgrade: new Date().getTime(),
-      name: "Cristiano Ronaldo",
-      preferredPosition: "ST",
-      suitablePositions: ["LWF", "CF"],
-    },
-  ];
-
   constructor(props: Props) {
     super(props);
     this.state = {
       players: [],
+      popup: false,
+      currentPlayer: {
+        name: "",
+        age: 0,
+        id: 0,
+        imageURI: "",
+        lastUpgrade: 0,
+        level: 0,
+        preferredPosition: "",
+        suitablePositions: [],
+      },
     };
   }
 
@@ -119,6 +47,7 @@ export class Sell extends Component<Props, State> {
   }
 
   getPlayers = async () => {
+    this.props.setLoader(true);
     const playerIds: number[] = await getPlayersByOwner(
       this.props.futNFT,
       this.props.account
@@ -128,24 +57,62 @@ export class Sell extends Component<Props, State> {
       const player = await getPlayer(this.props.futNFTMatch, id);
       players.push(player);
     });
-    this.setState({ players: players });
+    setTimeout(() => {
+      this.setState({ players: players });
+      this.props.setLoader(false);
+    }, 1000);
   };
 
   render() {
     return (
-      <div className={sellStyles.sellContainer}>
-        {this.state.players.map((player, key) => {
-          return (
-            <Player
-              btnId={`sellBtn${key}`}
-              key={key}
-              player={player}
-              btnText="Sell"
-              handleClick={() => console.log(`Sold #${key + 1}`)}
-            />
-          );
-        })}
-      </div>
+      <>
+        {this.state.popup && (
+          <Popup
+            handleClick={async () => {
+              const price = ethers.utils.parseEther(
+                (
+                  parseFloat(
+                    (document.getElementById("price")! as HTMLInputElement)
+                      .value
+                  ) * 0.0005229
+                ).toString()
+              );
+              this.props.setLoader(true);
+              const provider = (window as any).provider;
+              const signer = provider.getSigner();
+              const tx = await this.props.futNFTTransfer
+                .connect(signer)
+                .list(this.state.currentPlayer.id, price);
+              await tx.wait();
+              const newPlayers = this.state.players.filter(
+                (pl) => pl !== this.state.currentPlayer
+              );
+              this.setState({ players: newPlayers });
+              this.setState({ popup: false });
+              this.props.setLoader(false);
+            }}
+          />
+        )}
+        <div className={sellStyles.sellContainer}>
+          {this.state.players.map((player, key) => {
+            if (player.name.length > 0) {
+              return (
+                <Player
+                  btnId={`sellBtn${key}`}
+                  setPlayerInfo={this.props.setPlayerInfo}
+                  setPlayerInfoActivated={this.props.setPlayerInfoActivated}
+                  key={key}
+                  player={player}
+                  btnText="Sell"
+                  handleClick={async () => {
+                    this.setState({ currentPlayer: player, popup: true });
+                  }}
+                />
+              );
+            }
+          })}
+        </div>
+      </>
     );
   }
 }

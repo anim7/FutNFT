@@ -1,16 +1,20 @@
 import React, { Component } from "react";
+import { ethers } from "ethers";
 import trainStyles from "../styles/Train.module.scss";
 import { Player as PlayerInterface } from "../global/player";
 import { Player } from "./Player";
 import getPlayersByOwner from "../utils/getPlayersByOwner";
 import { getPlayer } from "../utils/getPlayer";
 import Alert from "./Alert";
-import { ethers } from "ethers";
 
 interface Props {
   account: string;
   futNFT: ethers.Contract;
   futNFTTraining: ethers.Contract;
+  futNFTMatch: ethers.Contract;
+  setLoader: (loader: boolean) => void;
+  setPlayerInfo: (player: PlayerInterface) => void;
+  setPlayerInfoActivated: (activated: boolean) => void;
 }
 interface State {
   players: PlayerInterface[];
@@ -118,23 +122,48 @@ export class Train extends Component<Props, State> {
   }
 
   async componentDidMount() {
+    this.props.setLoader(true);
+    await this.getPlayers();
     this.setState({
       cooldown: await this.props.futNFTTraining.cooldown(),
     });
-    await this.getPlayers();
   }
 
   getPlayers = async () => {
+    this.props.setLoader(true);
     const playerIds: number[] = await getPlayersByOwner(
       this.props.futNFT,
       this.props.account
     );
     let players: PlayerInterface[] = [];
     playerIds.forEach(async (id) => {
-      const player = await getPlayer(this.props.futNFT, id);
+      const player = await getPlayer(this.props.futNFTMatch, id);
       players.push(player);
     });
-    this.setState({ players: players });
+    setTimeout(() => {
+      this.setState({ players: players });
+      this.props.setLoader(false);
+    }, 1000);
+  };
+
+  levelUp = async (playerId: number) => {
+    this.props.setLoader(true);
+    const provider: ethers.providers.Web3Provider = (window as any).provider;
+    const signer = provider.getSigner();
+    const fee = await this.props.futNFTTraining.fee();
+    try {
+      const tx = await this.props.futNFTTraining
+        .connect(signer)
+        .train(playerId, {
+          gasLimit: 2000000,
+          gasPrice: 3000000000,
+          value: fee,
+        });
+      await tx.wait();
+    } catch (err) {
+      console.error(err);
+    }
+    this.props.setLoader(false);
   };
 
   render() {
@@ -146,28 +175,31 @@ export class Train extends Component<Props, State> {
           okEnabled={true}
         />
         <div className={trainStyles.trainContainer}>
-          {this.players.map((player, key) => {
-            return (
-              <Player
-                btnId={`trainBtn${key}`}
-                key={key}
-                player={player}
-                btnText={"Level Up"}
-                handleClick={() => {
-                  //change this
-                  const timestamp = Math.floor(new Date().getTime() / 1000);
-                  const lastUpgrade = player.lastUpgrade;
-                  const cooldown = this.state.cooldown;
-                  if (timestamp - lastUpgrade >= cooldown) {
-                    player.level++;
-                    player.lastUpgrade = timestamp;
-                  } else {
-                    document.getElementById("cooldownAlert")!.style.display =
-                      "inline-block";
-                  }
-                }}
-              />
-            );
+          {this.state.players.map((player, key) => {
+            if (player.name.length > 0) {
+              return (
+                <Player
+                  btnId={`trainBtn${key}`}
+                  setPlayerInfo={this.props.setPlayerInfo}
+                  setPlayerInfoActivated={this.props.setPlayerInfoActivated}
+                  key={key}
+                  player={player}
+                  btnText={"Level Up"}
+                  handleClick={async () => {
+                    // change this
+                    const timestamp = Math.floor(new Date().getTime() / 1000);
+                    const lastUpgrade = player.lastUpgrade;
+                    const cooldown = this.state.cooldown;
+                    if (timestamp - lastUpgrade >= cooldown) {
+                      await this.levelUp(player.id);
+                    } else {
+                      document.getElementById("cooldownAlert")!.style.display =
+                        "inline-block";
+                    }
+                  }}
+                />
+              );
+            }
           })}
         </div>
       </>

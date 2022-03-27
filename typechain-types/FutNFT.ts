@@ -61,7 +61,9 @@ export interface FutNFTInterface extends utils.Interface {
     "getPlayerExists(uint256)": FunctionFragment;
     "getPlayersByOwner(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "lineUps(address)": FunctionFragment;
     "listedPlayers(uint256)": FunctionFragment;
+    "listedPlayersPrices(uint256)": FunctionFragment;
     "mint((string,string,uint256,uint8,uint8,uint64,string[],string))": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -70,6 +72,7 @@ export interface FutNFTInterface extends utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setDefaultArraySize(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
@@ -78,6 +81,7 @@ export interface FutNFTInterface extends utils.Interface {
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "withdraw()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -109,8 +113,13 @@ export interface FutNFTInterface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
+  encodeFunctionData(functionFragment: "lineUps", values: [string]): string;
   encodeFunctionData(
     functionFragment: "listedPlayers",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "listedPlayersPrices",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -138,6 +147,10 @@ export interface FutNFTInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setDefaultArraySize",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -168,6 +181,7 @@ export interface FutNFTInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -192,8 +206,13 @@ export interface FutNFTInterface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "lineUps", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "listedPlayers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "listedPlayersPrices",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -214,6 +233,10 @@ export interface FutNFTInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setApprovalForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setDefaultArraySize",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -242,6 +265,7 @@ export interface FutNFTInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -355,7 +379,17 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    lineUps(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[string, boolean] & { formation: string; isValid: boolean }>;
+
     listedPlayers(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    listedPlayersPrices(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -404,6 +438,11 @@ export interface FutNFT extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setDefaultArraySize(
+      _size: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -438,6 +477,10 @@ export interface FutNFT extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    withdraw(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -478,7 +521,17 @@ export interface FutNFT extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  lineUps(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<[string, boolean] & { formation: string; isValid: boolean }>;
+
   listedPlayers(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  listedPlayersPrices(
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -521,6 +574,11 @@ export interface FutNFT extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setDefaultArraySize(
+    _size: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -552,6 +610,10 @@ export interface FutNFT extends BaseContract {
 
   transferOwnership(
     newOwner: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  withdraw(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -592,7 +654,17 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    lineUps(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[string, boolean] & { formation: string; isValid: boolean }>;
+
     listedPlayers(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    listedPlayersPrices(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -636,6 +708,11 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setDefaultArraySize(
+      _size: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -669,6 +746,8 @@ export interface FutNFT extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    withdraw(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -752,7 +831,14 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    lineUps(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     listedPlayers(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    listedPlayersPrices(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -801,6 +887,11 @@ export interface FutNFT extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setDefaultArraySize(
+      _size: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -835,6 +926,10 @@ export interface FutNFT extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    withdraw(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -879,7 +974,17 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    lineUps(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     listedPlayers(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    listedPlayersPrices(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -928,6 +1033,11 @@ export interface FutNFT extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setDefaultArraySize(
+      _size: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -962,6 +1072,10 @@ export interface FutNFT extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdraw(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

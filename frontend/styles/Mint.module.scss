@@ -1,1 +1,69 @@
 @import "mixins";
+
+.mintContainer {
+  margin: 2rem 0;
+  .mintForm {
+    margin: auto;
+    padding: 0.5rem;
+    background-color: rgb(1, 1, 32);
+    border-radius: 0.4rem;
+    border: 0.1rem solid #0063cc;
+    width: 18rem;
+    @include flexContainer(center, center, column, nowrap);
+    .input {
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      background-color: rgb(85, 85, 85);
+      border-radius: 0.4rem;
+      padding: 0.5rem;
+      &:focus {
+        background-color: rgb(63, 63, 63);
+        outline: none;
+      }
+    }
+    .label {
+      align-self: flex-start;
+      font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+    }
+    #addPosition {
+      margin-bottom: 1rem;
+    }
+    .submit {
+      width: 100%;
+      font-size: 1.4rem;
+      padding: 0.1rem;
+      border-radius: 0.4rem;
+      cursor: pointer;
+      background-color: #007bff;
+      &:hover {
+        background-color: #0063cc;
+      }
+    }
+    #positionInput {
+      margin-bottom: 0.3rem;
+    }
+    #imageUpload {
+      font-size: 0.85rem;
+    }
+    .positions {
+      margin-bottom: 0.3rem;
+      @include flexContainer(flex-start, center, row, wrap);
+      .position {
+        margin: 0.1rem;
+        background-color: rgb(66, 66, 66);
+        @include flexContainer(center, center, row, nowrap);
+        font-size: 1.2rem;
+        button {
+          background-color: rgb(66, 66, 66);
+          font-size: 1.2rem;
+          margin-left: 0.2rem;
+          //   border-left: 0.1rem solid ;
+          cursor: pointer;
+          &:hover {
+            color: rgb(214, 208, 208);
+          }
+        }
+      }
+    }
+  }
+}

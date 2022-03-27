@@ -6,6 +6,11 @@ import { ethers } from "ethers";
 
 interface Props {
   futNFT: ethers.Contract;
+  futNFTTransfer: ethers.Contract;
+  setLoader: (loader: boolean) => void;
+  account: string;
+  setPlayerInfo: (player: PlayerInterface) => void;
+  setPlayerInfoActivated: (activated: boolean) => void;
 }
 interface State {
   listedPlayers: PlayerInterface[];
@@ -19,40 +24,47 @@ export class Buy extends Component<Props, State> {
     };
   }
 
-  componentDidMount() {
-    this.getListedPlayers();
-    setTimeout(() => {
-      console.log("LISTED PLAYERS:");
-      console.log(this.state.listedPlayers);
-    }, 5000);
+  async componentDidMount() {
+    this.props.setLoader(true);
+    await this.getListedPlayers();
+    console.log("Listed Players: ");
+    console.log(this.state.listedPlayers);
   }
 
   getListedPlayers = async () => {
-    const listedPlayers = await this.props.futNFT.getListedPlayers();
-    this.setState({
-      listedPlayers: listedPlayers,
+    this.props.setLoader(true);
+    const listedPlayerIds: PlayerInterface[] =
+      await this.props.futNFT.getListedPlayers();
+    const listedPlayers: PlayerInterface[] = [];
+    listedPlayerIds.forEach(async (playerId) => {
+      const player = await this.props.futNFT.getPlayer(playerId);
+      console.log(player);
+      listedPlayers.push(player);
     });
     // const player: PlayerInterface = {
-    //   name: "Cristiano Ronaldo",
-    //   preferredPosition: "ST",
     //   id: 1,
-    //   age: 37,
-    //   level: 17,
-    //   lastUpgrade: new Date().getTime(),
-    //   suitablePositions: ["CF", "LWF"],
+    //   age: 34,
     //   imageURI:
-    //     "https://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy.ipfs.dweb.link/nft.png",
+    //     "ipfs://bafybeicfhmevzs4aso7rqvx7l5ndb2ly7gudjyj5xjkztvohpwxw2za7iy/nft.png",
+    //   lastUpgrade: Math.floor(new Date().getTime() / 1000) - 43200,
+    //   level: 20,
+    //   name: "Lionel Messi",
+    //   preferredPosition: "RWF",
+    //   suitablePositions: ["ST", "CF", "AMF", "RMF"],
     // };
-    // const provider = (window as any).provider;
+    // const provider: ethers.providers.Web3Provider = (window as any).provider;
     // const signer = provider.getSigner();
-    // const tx = await futNFT.connect(signer).mint(player, {
-    //   gasPrice: 30000000000,
+    // const tx = await this.props.futNFT.connect(signer).mint(player, {
     //   gasLimit: 2000000,
+    //   gasPrice: 30000000000,
     // });
     // await tx.wait();
-    // console.log("minted");
-    const player1 = await this.props.futNFT.getPlayer(1);
-    console.log(player1);
+    setTimeout(() => {
+      this.setState({
+        listedPlayers: listedPlayers,
+      });
+      this.props.setLoader(false);
+    }, 1000);
   };
 
   players: PlayerInterface[] = [
@@ -150,15 +162,49 @@ export class Buy extends Component<Props, State> {
     return (
       <div className={buyStyles.buyContainer}>
         {this.state.listedPlayers.map((player, key) => {
-          return (
-            <Player
-              btnId={`buyBtn${key}`}
-              key={key}
-              player={player}
-              btnText="Buy"
-              handleClick={() => console.log(`Bought #${key + 1}`)}
-            />
-          );
+          if (player.name.length > 0) {
+            return (
+              <Player
+                btnId={`buyBtn${key}`}
+                setPlayerInfo={this.props.setPlayerInfo}
+                setPlayerInfoActivated={this.props.setPlayerInfoActivated}
+                key={key}
+                player={player}
+                btnText="Buy"
+                handleClick={async () => {
+                  this.props.setLoader(true);
+                  const owner = await this.props.futNFT.ownerOf(player.id);
+                  const provider: ethers.providers.Web3Provider = (
+                    window as any
+                  ).provider;
+                  const signer = provider.getSigner();
+                  if (this.props.account === owner) {
+                    const tx = await this.props.futNFTTransfer
+                      .connect(signer)
+                      .unlist(player.id);
+                    await tx.wait();
+                  } else {
+                    const price: bigint =
+                      await this.props.futNFTTransfer.listedPlayersPrices(
+                        player.id
+                      );
+                    const tx = await this.props.futNFTTransfer
+                      .connect(signer)
+                      .transferPlayer(player.id, {
+                        value: price,
+                        gasLimit: 2000000, gasPrice: 30000000000
+                      });
+                    await tx.wait();
+                  }
+                  const newPlayerArr = this.state.listedPlayers.filter(
+                    (pl) => pl !== player
+                  );
+                  this.setState({ listedPlayers: newPlayerArr });
+                  this.props.setLoader(false);
+                }}
+              />
+            );
+          }
         })}
       </div>
     );

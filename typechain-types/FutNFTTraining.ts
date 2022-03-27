@@ -64,7 +64,9 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     "getPlayerExists(uint256)": FunctionFragment;
     "getPlayersByOwner(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "lineUps(address)": FunctionFragment;
     "listedPlayers(uint256)": FunctionFragment;
+    "listedPlayersPrices(uint256)": FunctionFragment;
     "maxLevel()": FunctionFragment;
     "mint((string,string,uint256,uint8,uint8,uint64,string[],string))": FunctionFragment;
     "name()": FunctionFragment;
@@ -75,6 +77,7 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setCooldown(uint256)": FunctionFragment;
+    "setDefaultArraySize(uint256)": FunctionFragment;
     "setFee(uint256)": FunctionFragment;
     "setMaxLevel(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -86,6 +89,7 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     "train(uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "withdraw()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -119,8 +123,13 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
+  encodeFunctionData(functionFragment: "lineUps", values: [string]): string;
   encodeFunctionData(
     functionFragment: "listedPlayers",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "listedPlayersPrices",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "maxLevel", values?: undefined): string;
@@ -152,6 +161,10 @@ export interface FutNFTTrainingInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setCooldown",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setDefaultArraySize",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -192,6 +205,7 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -218,8 +232,13 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "lineUps", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "listedPlayers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "listedPlayersPrices",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "maxLevel", data: BytesLike): Result;
@@ -245,6 +264,10 @@ export interface FutNFTTrainingInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setCooldown",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setDefaultArraySize",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setFee", data: BytesLike): Result;
@@ -279,6 +302,7 @@ export interface FutNFTTrainingInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -402,7 +426,17 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    lineUps(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[string, boolean] & { formation: string; isValid: boolean }>;
+
     listedPlayers(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    listedPlayersPrices(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -458,6 +492,11 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setDefaultArraySize(
+      _size: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setFee(
       _fee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -509,6 +548,10 @@ export interface FutNFTTraining extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    withdraw(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   approve(
@@ -551,7 +594,17 @@ export interface FutNFTTraining extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  lineUps(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<[string, boolean] & { formation: string; isValid: boolean }>;
+
   listedPlayers(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  listedPlayersPrices(
     arg0: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -598,6 +651,11 @@ export interface FutNFTTraining extends BaseContract {
 
   setCooldown(
     _cooldown: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setDefaultArraySize(
+    _size: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -650,6 +708,10 @@ export interface FutNFTTraining extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  withdraw(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     approve(
       to: string,
@@ -691,7 +753,17 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    lineUps(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[string, boolean] & { formation: string; isValid: boolean }>;
+
     listedPlayers(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    listedPlayersPrices(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -742,6 +814,11 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setDefaultArraySize(
+      _size: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setFee(_fee: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     setMaxLevel(_level: BigNumberish, overrides?: CallOverrides): Promise<void>;
@@ -781,6 +858,8 @@ export interface FutNFTTraining extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    withdraw(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -871,7 +950,14 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    lineUps(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     listedPlayers(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    listedPlayersPrices(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -927,6 +1013,11 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setDefaultArraySize(
+      _size: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setFee(
       _fee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -978,6 +1069,10 @@ export interface FutNFTTraining extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    withdraw(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1024,7 +1119,17 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    lineUps(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     listedPlayers(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    listedPlayersPrices(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1080,6 +1185,11 @@ export interface FutNFTTraining extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setDefaultArraySize(
+      _size: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setFee(
       _fee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1129,6 +1239,10 @@ export interface FutNFTTraining extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdraw(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

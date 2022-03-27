@@ -7068,7 +7068,7 @@ next-tick@~1.0.0:
 
 nft.storage@^6.0.2:
   version "6.0.2"
-  resolved "https://registry.npmjs.org/nft.storage/-/nft.storage-6.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/nft.storage/-/nft.storage-6.0.2.tgz#84991846842ece78d322bd9f5afa2f9358494b13"
   integrity sha512-TaycdqD2DabEZ0mSNdcTeO2D3FKMlbIukXpihncMb8BL805sieOWt2tZBZmlUgHMxtDZIeWpiQOIr7YjhuMI0Q==
   dependencies:
     "@ipld/car" "^3.2.3"

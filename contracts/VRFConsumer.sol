@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.12;
 
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
@@ -7,14 +7,15 @@ contract VRFConsumer is VRFConsumerBase {
     bytes32 keyHash;
     uint256 requiredFee;
     uint256 public randomResult;
+    string public winner;
 
     constructor()
         VRFConsumerBase(
-            0x844ECf0B33EB65e1EC34AEa0d082D39879169890,
-            0xa36085F69e2889c224210F603D836748e7dC0088
+            0x8C7382F9D8f56b33781fE506E897a4F1e2d17255,
+            0x326C977E6efc84E512bB9C30f76E30c160eD06FB
         )
     {
-        keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4;
+        keyHash = 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4;
         requiredFee = 0.1 * 10**18;
     }
 
@@ -31,5 +32,17 @@ contract VRFConsumer is VRFConsumerBase {
         uint256 randomness
     ) internal override {
         randomResult = randomness;
+    }
+
+    function test() public {
+        getRandomNumber();
+        randomResult = (randomResult % 100) + 1;
+        if (randomResult != 0) {
+            if (randomResult < 50) {
+                winner = "player1";
+            } else {
+                winner = "player2";
+            }
+        }
     }
 }
