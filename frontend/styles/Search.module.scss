@@ -1,0 +1,33 @@
+@import "mixins";
+
+.searchContainer {
+  @include flexContainer(center, center, row, nowrap);
+  .searchBar {
+    font-size: 1.2rem;
+    width: 25rem;
+    padding: 0.2rem;
+    background-color: rgb(68, 68, 68);
+    height: 2rem;
+    border-top-left-radius: 0.4rem;
+    border-bottom-left-radius: 0.4rem;
+    &:focus {
+      outline: none;
+      background-color: rgb(51, 51, 51);
+    }
+  }
+  .searchBtn {
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: white;
+    padding: 0.2rem;
+    height: 2rem;
+    width: 3rem;
+    @include flexContainer(center, center, row, nowrap);
+    border-top-right-radius: 0.4rem;
+    border-bottom-right-radius: 0.4rem;
+    background-color: #007bff;
+    &:hover {
+      background-color: #0055af;
+    }
+  }
+}

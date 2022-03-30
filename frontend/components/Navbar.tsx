@@ -29,8 +29,13 @@ const Navbar: React.FunctionComponent<Props> = (props) => {
       handleLinkClick("trainLink", navStyles.link, navStyles.activeLink, false);
     } else if (router.asPath === "/play") {
       handleLinkClick("playLink", navStyles.link, navStyles.activeLink, false);
-    } else if (router.asPath === "/mint") {
-      handleLinkClick("mintLink", navStyles.link, navStyles.activeLink, false);
+    } else if (router.asPath === "/settings") {
+      handleLinkClick(
+        "settingsLink",
+        navStyles.link,
+        navStyles.activeLink,
+        false
+      );
     }
   }, [router.asPath]);
   return <NavbarClass {...props} />;
@@ -45,6 +50,12 @@ class NavbarClass extends Component<Props, State> {
   }
 
   async componentDidMount() {
+    if (this.props.blockchainDataLoaded) {
+      this.setState({ owner: await getOwner(this.props.futNFTMatch) });
+    }
+  }
+
+  async componentDidUpdate() {
     if (this.props.blockchainDataLoaded) {
       this.setState({ owner: await getOwner(this.props.futNFTMatch) });
     }
@@ -88,9 +99,9 @@ class NavbarClass extends Component<Props, State> {
               </li>
               {this.state.owner.toLowerCase() ===
                 this.props.account.toLowerCase() && (
-                <li className={navStyles.link} id="mintLink">
-                  <Link href="/mint">
-                    <a>Mint</a>
+                <li className={navStyles.link} id="settingsLink">
+                  <Link href="/settings">
+                    <a>Settings</a>
                   </Link>
                 </li>
               )}

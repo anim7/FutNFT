@@ -7,7 +7,6 @@ contract VRFConsumer is VRFConsumerBase {
     bytes32 keyHash;
     uint256 requiredFee;
     uint256 public randomResult;
-    string public winner;
 
     constructor()
         VRFConsumerBase(
@@ -32,17 +31,5 @@ contract VRFConsumer is VRFConsumerBase {
         uint256 randomness
     ) internal override {
         randomResult = randomness;
-    }
-
-    function test() public {
-        getRandomNumber();
-        randomResult = (randomResult % 100) + 1;
-        if (randomResult != 0) {
-            if (randomResult < 50) {
-                winner = "player1";
-            } else {
-                winner = "player2";
-            }
-        }
     }
 }

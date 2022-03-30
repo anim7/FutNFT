@@ -1,0 +1,126 @@
+@import "mixins";
+
+.settingsContainer {
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  @include flexContainer(center, center, column, nowrap);
+  h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.7rem;
+  }
+  h3 {
+    font-size: 1.4rem;
+  }
+  .link {
+    font-size: 1.3rem;
+    padding: 0.1rem;
+    margin: 1rem 0;
+    margin-top: 0;
+    border-radius: 0.4rem;
+    width: 5rem;
+    text-align: center;
+    background-color: #007bff;
+    &:hover {
+      background-color: #0055af;
+    }
+  }
+  .item {
+    @include flexContainer(center, center, row, nowrap);
+    margin: 0.5rem;
+    * {
+      font-size: 1.2rem;
+    }
+    .variable {
+      margin-right: 0.5rem;
+      background-color: rgb(46, 46, 46);
+      border-radius: 0.4rem;
+      padding: 0.1rem;
+    }
+    .value {
+      border-top-left-radius: 0.4rem;
+      border-bottom-left-radius: 0.4rem;
+      padding: 0.2rem;
+      text-align: center;
+      background-color: rgb(65, 65, 65);
+      height: 2rem;
+      &:focus {
+        outline: none;
+      }
+    }
+    .unit {
+      background-color: rgb(65, 65, 65);
+      padding: 0.2rem;
+      border-top-right-radius: 0.4rem;
+      border-bottom-right-radius: 0.4rem;
+      height: 2rem;
+    }
+    .setBtn {
+      padding: 0.1rem;
+      margin-left: 0.5rem;
+      border-radius: 0.4rem;
+      cursor: pointer;
+      background-color: #007bff;
+      &:hover {
+        background-color: #0055af;
+      }
+    }
+  }
+  .formation {
+    @include flexContainer(center, center, column, nowrap);
+    width: 30rem;
+    .positions {
+      @include flexContainer(center, center, row, wrap);
+      .position {
+        width: fit-content;
+        margin: 0 0.125rem;
+        @include flexContainer(center, center, row, nowrap);
+        border-radius: 0.4rem;
+        background-color: rgb(63, 63, 63);
+        p {
+        }
+        button {
+          margin: 0;
+          background-color: rgb(63, 63, 63);
+        }
+      }
+    }
+    h4 {
+      font-size: 1.3rem;
+    }
+    input {
+      border-radius: 0.4rem;
+      margin-bottom: 0.5rem;
+      padding: 0.2rem;
+      text-align: center;
+      font-size: 1.3rem;
+      background-color: rgb(65, 65, 65);
+      height: 2rem;
+      &:focus {
+        outline: none;
+      }
+      width: 100%;
+    }
+    div {
+      width: 100%;
+      input {
+        width: 70%;
+      }
+      button {
+        width: 28%;
+        margin-left: 0.1rem;
+        padding: 0.1rem;
+        margin-left: 0.5rem;
+        border-radius: 0.4rem;
+        cursor: pointer;
+        font-size: 1.3rem;
+        background-color: #007bff;
+        &:hover {
+          background-color: #0055af;
+        }
+      }
+    }
+  }
+}

@@ -56,6 +56,7 @@ export interface FutNFTInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getBalance()": FunctionFragment;
     "getListedPlayers()": FunctionFragment;
     "getPlayer(uint256)": FunctionFragment;
     "getPlayerExists(uint256)": FunctionFragment;
@@ -81,7 +82,7 @@ export interface FutNFTInterface extends utils.Interface {
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "withdraw()": FunctionFragment;
+    "withdraw(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -92,6 +93,10 @@ export interface FutNFTInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBalance",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getListedPlayers",
@@ -181,7 +186,10 @@ export interface FutNFTInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [BigNumberish]
+  ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
@@ -189,6 +197,7 @@ export interface FutNFTInterface extends utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getListedPlayers",
     data: BytesLike
@@ -356,6 +365,8 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getListedPlayers(overrides?: CallOverrides): Promise<[BigNumber[]]>;
 
     getPlayer(
@@ -481,6 +492,7 @@ export interface FutNFT extends BaseContract {
     ): Promise<ContractTransaction>;
 
     withdraw(
+      _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -497,6 +509,8 @@ export interface FutNFT extends BaseContract {
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
   getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
 
@@ -614,6 +628,7 @@ export interface FutNFT extends BaseContract {
   ): Promise<ContractTransaction>;
 
   withdraw(
+    _price: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -630,6 +645,8 @@ export interface FutNFT extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
 
@@ -747,7 +764,7 @@ export interface FutNFT extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    withdraw(overrides?: CallOverrides): Promise<void>;
+    withdraw(_price: BigNumberish, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -810,6 +827,8 @@ export interface FutNFT extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    getBalance(overrides?: CallOverrides): Promise<BigNumber>;
 
     getListedPlayers(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -930,6 +949,7 @@ export interface FutNFT extends BaseContract {
     ): Promise<BigNumber>;
 
     withdraw(
+      _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -950,6 +970,8 @@ export interface FutNFT extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getListedPlayers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1076,6 +1098,7 @@ export interface FutNFT extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     withdraw(
+      _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

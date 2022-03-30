@@ -2,6 +2,34 @@
 
 .matchContainer {
   @include flexContainer(center, center, column, nowrap);
+  margin-bottom: 2rem;
+  .playNow {
+    @include flexContainer(center, center, column, nowrap);
+    margin-top: 2rem;
+    button {
+      border: 0.05rem solid black;
+      width: 50%;
+      background-color: #007bff;
+      font-size: 1.2rem;
+      border-radius: 0.4rem;
+      padding: 0.2rem;
+      cursor: pointer;
+      &:hover {
+        background-color: #0055af;
+      }
+    }
+  }
+  .btn {
+    border: 0.05rem solid black;
+    background-color: #007bff;
+    font-size: 1.2rem;
+    border-radius: 0.4rem;
+    padding: 0.2rem;
+    cursor: pointer;
+    &:hover {
+      background-color: #0055af;
+    }
+  }
   h2 {
     text-align: center;
     font-size: 1.8rem;

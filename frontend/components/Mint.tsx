@@ -202,7 +202,7 @@ class Mint extends Component<PropsWithRouter, State> {
               const signer = provider.getSigner();
               const tx = await this.props.futNFTMatch
                 .connect(signer)
-                .mint(player, { gasLimit: 2000000, gasPrice: 30000000000 });
+                .mint(player, { gasLimit: 1000000, gasPrice: 30000000000 });
               await tx.wait();
               this.props.setLoader(false);
             }}

@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import Image from "next/image";
 import { NextRouter, useRouter } from "next/router";
 import React, { Component } from "react";
+import { Lineup } from "../global/lineup";
 import { Player } from "../global/player";
 import matchStyles from "../styles/Match.module.scss";
 import { getPlayer } from "../utils/getPlayer";
@@ -24,6 +25,7 @@ interface State {
   lineupPlayersToPositions: Map<Player, string>;
   lineupSet: boolean;
   formation: string;
+  lineup: Lineup;
 }
 interface PropsWithRouter extends Props {
   router: NextRouter;
@@ -46,6 +48,7 @@ class Match extends Component<PropsWithRouter, State> {
       lineupPlayersToPositions: new Map(),
       lineupSet: false,
       formation: "",
+      lineup: { formation: "", playerIds: [], positions: [], isValid: false },
     };
   }
 
@@ -67,6 +70,8 @@ class Match extends Component<PropsWithRouter, State> {
         0
       );
     }
+    await this.getUserLineup();
+    console.log("Players: ");
     console.log(this.state.players);
     this.props.setLoader(false);
   }
@@ -108,6 +113,11 @@ class Match extends Component<PropsWithRouter, State> {
     }
   }
 
+  getUserLineup = async () => {
+    const lineup = await this.props.futNFTMatch.lineUps(this.props.account);
+    this.setState({ lineup: lineup });
+  };
+
   getPlayersByOwner = async (owner: string) => {
     const players = await getPlayersByOwnerUtil(this.props.futNFT, owner);
     this.setState({
@@ -129,7 +139,15 @@ class Match extends Component<PropsWithRouter, State> {
 
   enoughPlayersAvailable = () => {
     if (this.state.playerIds.length >= 11) {
-      return true;
+      let length = 0;
+      this.state.playerIds.forEach((playerId) => {
+        if (playerId.toString() !== "0") {
+          length++;
+        }
+      });
+      if (length >= 11) {
+        return true;
+      }
     }
     return false;
   };
@@ -161,7 +179,11 @@ class Match extends Component<PropsWithRouter, State> {
           okEnabled={true}
         />
         <div className={matchStyles.matchContainer}>
-          <h2>Select Players for your Lineup</h2>
+          <h2>
+            {!this.state.lineup.isValid
+              ? "Select Players for your Lineup"
+              : "You have already set your lineup. Do you want to reset it again?"}
+          </h2>
           <select
             name="formation"
             id="formation"
@@ -325,7 +347,9 @@ class Match extends Component<PropsWithRouter, State> {
           {this.state.lineupSet && (
             <div>
               <button
+                className={matchStyles.btn}
                 onClick={async () => {
+                  this.props.setLoader(true);
                   const lineupPlayers = this.state.lineUpPlayers;
                   const playerIds: number[] = [];
                   const positions: string[] = [];
@@ -345,16 +369,44 @@ class Match extends Component<PropsWithRouter, State> {
                     .connect(signer)
                     .setLineUp(playerIds, positions, formation, {
                       value: fee,
-                      gasPrice: 300000000,
-                      gasLimit: 2000000,
+                      gasLimit: 1000000,
+                      gasPrice: 30000000000,
                     });
                   await tx.wait();
-                  console.log("lineup set");
+                  await this.getUserLineup();
+                  this.props.setLoader(false);
                 }}
               >
                 Set Lineup
               </button>
             </div>
+          )}
+          {this.state.lineup.isValid && (
+            <>
+              <div className={matchStyles.teamRating}></div>
+              <div className={matchStyles.playNow}>
+                <h2>Are you ready to face other teams?</h2>
+                <button
+                  onClick={async () => {
+                    const provider: ethers.providers.Web3Provider = (
+                      window as any
+                    ).provider;
+                    const signer = provider.getSigner();
+                    const matchFee = await this.props.futNFTMatch.matchFee();
+                    const tx = await this.props.futNFTMatch
+                      .connect(signer)
+                      .play({
+                        value: matchFee,
+                        gasLimit: 1000000,
+                        gasPrice: 30000000000,
+                      });
+                    await tx.wait();
+                  }}
+                >
+                  Play Now!
+                </button>
+              </div>
+            </>
           )}
         </div>
       </>

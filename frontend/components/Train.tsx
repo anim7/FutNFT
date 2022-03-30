@@ -6,6 +6,8 @@ import { Player } from "./Player";
 import getPlayersByOwner from "../utils/getPlayersByOwner";
 import { getPlayer } from "../utils/getPlayer";
 import Alert from "./Alert";
+import Confirm from "./Confirm";
+import Search from "./Search";
 
 interface Props {
   account: string;
@@ -19,6 +21,8 @@ interface Props {
 interface State {
   players: PlayerInterface[];
   cooldown: number;
+  confirm: boolean;
+  currentPlayer: PlayerInterface;
 }
 
 export class Train extends Component<Props, State> {
@@ -118,6 +122,17 @@ export class Train extends Component<Props, State> {
     this.state = {
       players: [],
       cooldown: 43200,
+      confirm: false,
+      currentPlayer: {
+        name: "",
+        age: 0,
+        id: 0,
+        imageURI: "",
+        lastUpgrade: 0,
+        level: 0,
+        preferredPosition: "",
+        suitablePositions: [],
+      },
     };
   }
 
@@ -125,7 +140,7 @@ export class Train extends Component<Props, State> {
     this.props.setLoader(true);
     await this.getPlayers();
     this.setState({
-      cooldown: await this.props.futNFTTraining.cooldown(),
+      cooldown: (await this.props.futNFTTraining.cooldown()).toNumber(),
     });
   }
 
@@ -166,6 +181,26 @@ export class Train extends Component<Props, State> {
     this.props.setLoader(false);
   };
 
+  handleYesClick = async (player: PlayerInterface) => {
+    this.setState({ confirm: false });
+    this.props.setLoader(true);
+    const timestamp = Math.floor(new Date().getTime() / 1000);
+    const lastUpgrade = player.lastUpgrade;
+    const cooldown = this.state.cooldown;
+    console.log(timestamp);
+    console.log(player);
+    console.log(cooldown);
+    if (timestamp - lastUpgrade >= cooldown) {
+      await this.levelUp(player.id);
+    } else {
+      document.getElementById("cooldownAlert")!.style.display = "inline-block";
+    }
+    await this.getPlayers();
+    setTimeout(() => {
+      this.props.setLoader(false);
+    }, 1000);
+  };
+
   render() {
     return (
       <>
@@ -174,6 +209,31 @@ export class Train extends Component<Props, State> {
           message="Cooldown period is not over! Cannot level up!"
           okEnabled={true}
         />
+        <Search
+          id="trainSearch"
+          handleClick={async () => {
+            await this.getPlayers();
+            this.props.setLoader(true);
+            setTimeout(() => {
+              const search = (
+                document.getElementById("trainSearch")! as HTMLInputElement
+              ).value;
+              if (search != "") {
+                const newPlayers = this.state.players.filter((player) =>
+                  player.name.toLowerCase().includes(search.toLowerCase())
+                );
+                this.setState({ players: newPlayers });
+              }
+              this.props.setLoader(false);
+            }, 1500);
+          }}
+        />
+        {this.state.confirm && (
+          <Confirm
+            handleYesClick={() => this.handleYesClick(this.state.currentPlayer)}
+            handleNoClick={() => this.setState({ confirm: false })}
+          />
+        )}
         <div className={trainStyles.trainContainer}>
           {this.state.players.map((player, key) => {
             if (player.name.length > 0) {
@@ -185,17 +245,8 @@ export class Train extends Component<Props, State> {
                   key={key}
                   player={player}
                   btnText={"Level Up"}
-                  handleClick={async () => {
-                    // change this
-                    const timestamp = Math.floor(new Date().getTime() / 1000);
-                    const lastUpgrade = player.lastUpgrade;
-                    const cooldown = this.state.cooldown;
-                    if (timestamp - lastUpgrade >= cooldown) {
-                      await this.levelUp(player.id);
-                    } else {
-                      document.getElementById("cooldownAlert")!.style.display =
-                        "inline-block";
-                    }
+                  handleClick={() => {
+                    this.setState({ confirm: true, currentPlayer: player });
                   }}
                 />
               );

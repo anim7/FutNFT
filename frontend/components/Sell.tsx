@@ -7,6 +7,7 @@ import { getPlayer } from "../utils/getPlayer";
 import { ethers } from "ethers";
 import Popup from "./Popup";
 import PlayerInformation from "./PlayerInformation";
+import Search from "./Search";
 
 interface Props {
   account: string;
@@ -66,15 +67,32 @@ export class Sell extends Component<Props, State> {
   render() {
     return (
       <>
+        <Search
+          id="sellSearch"
+          handleClick={async () => {
+            await this.getPlayers();
+            this.props.setLoader(true);
+            setTimeout(() => {
+              const search = (
+                document.getElementById("sellSearch")! as HTMLInputElement
+              ).value;
+              if (search != "") {
+                const newPlayers = this.state.players.filter((player) =>
+                  player.name.toLowerCase().includes(search.toLowerCase())
+                );
+                this.setState({ players: newPlayers });
+              }
+              this.props.setLoader(false);
+            }, 1500);
+          }}
+        />
         {this.state.popup && (
           <Popup
+            handleCloseClick={() => this.setState({ popup: false })}
             handleClick={async () => {
               const price = ethers.utils.parseEther(
-                (
-                  parseFloat(
-                    (document.getElementById("price")! as HTMLInputElement)
-                      .value
-                  ) * 0.0005229
+                parseFloat(
+                  (document.getElementById("price")! as HTMLInputElement).value
                 ).toString()
               );
               this.props.setLoader(true);

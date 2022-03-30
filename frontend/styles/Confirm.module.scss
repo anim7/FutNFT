@@ -1,9 +1,5 @@
 @import "mixins";
 
-.buyContainer {
-  @include flexContainer(center, center, row, wrap);
-}
-
 .conform {
   @include flexContainer(center, center, column, nowrap);
   position: fixed;

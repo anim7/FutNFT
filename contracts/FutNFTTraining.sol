@@ -5,7 +5,8 @@ import "./FutNFT.sol";
 
 contract FutNFTTraining is FutNFT {
     uint256 public cooldown = 43200 seconds;
-    uint256 public fee = 0.001 ether;
+    uint256 public fee = 3 ether;
+    uint256 public earnedThroughTraining = 0;
     uint256 public maxLevel = 100;
 
     event LevelUp(uint256 playerId);
@@ -47,6 +48,8 @@ contract FutNFTTraining is FutNFT {
     {
         require(msg.value >= fee, "Required fee is not sent!");
         players[_playerId].level++;
+        players[_playerId].lastUpgrade = uint64(block.timestamp);
+        earnedThroughTraining += msg.value;
         emit LevelUp(_playerId);
     }
 }

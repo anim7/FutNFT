@@ -7,16 +7,7 @@ interface State {}
 
 export class Home extends Component<Props, State> {
   render() {
-    return (
-      <>
-        <Alert
-          id="matchAlert"
-          message="Cannot play! First buy enough players"
-          okEnabled={true}
-        />
-        <div>Home</div>
-      </>
-    );
+    return <div>Home</div>;
   }
 }
 

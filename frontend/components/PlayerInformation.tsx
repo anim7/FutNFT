@@ -25,8 +25,8 @@ const PlayerInformation: React.FunctionComponent<Props> = ({
           <p>{player.preferredPosition}</p>
           <span>Suitable Positions</span>
           <div>
-            {player.suitablePositions.map((position) => {
-              return <p>{position}</p>;
+            {player.suitablePositions.map((position, key) => {
+              return <p key={key}>{position}</p>;
             })}
           </div>
           <span>Level</span>

@@ -73,14 +73,17 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "cooldown()": FunctionFragment;
+    "earnedThroughTraining()": FunctionFragment;
     "fee()": FunctionFragment;
     "formationToPositions(string,uint256)": FunctionFragment;
     "formations(uint256)": FunctionFragment;
     "getAllFormations()": FunctionFragment;
     "getAllPositions()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getBalance()": FunctionFragment;
     "getLineup(address)": FunctionFragment;
     "getListedPlayers()": FunctionFragment;
+    "getOpponent()": FunctionFragment;
     "getPlayer(uint256)": FunctionFragment;
     "getPlayerExists(uint256)": FunctionFragment;
     "getPlayersByOwner(address)": FunctionFragment;
@@ -91,15 +94,17 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "levelPercentSuitablePosition()": FunctionFragment;
     "lineUps(address)": FunctionFragment;
     "lineupFee()": FunctionFragment;
+    "lineupSet(uint256)": FunctionFragment;
     "list(uint256,uint256)": FunctionFragment;
     "listedPlayers(uint256)": FunctionFragment;
     "listedPlayersPrices(uint256)": FunctionFragment;
+    "matchFee()": FunctionFragment;
     "maxLevel()": FunctionFragment;
     "mint((string,string,uint256,uint8,uint8,uint64,string[],string))": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "play(address)": FunctionFragment;
+    "play()": FunctionFragment;
     "playerToOwner(uint256)": FunctionFragment;
     "randomResult()": FunctionFragment;
     "rawFulfillRandomness(bytes32,uint256)": FunctionFragment;
@@ -112,11 +117,11 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "setLevelPercentNoPosition(uint256)": FunctionFragment;
     "setLevelPercentSuitablePosition(uint256)": FunctionFragment;
     "setLineUp(uint256[11],string[11],string)": FunctionFragment;
-    "setLinupFee(uint256)": FunctionFragment;
+    "setLineupFee(uint256)": FunctionFragment;
+    "setMatchFee(uint256)": FunctionFragment;
     "setMaxLevel(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
-    "test()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
@@ -126,8 +131,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "transferOwnership(address)": FunctionFragment;
     "transferPlayer(uint256)": FunctionFragment;
     "unlist(uint256)": FunctionFragment;
-    "winner()": FunctionFragment;
-    "withdraw()": FunctionFragment;
+    "withdraw(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -144,6 +148,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "cooldown", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "earnedThroughTraining",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "fee", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "formationToPositions",
@@ -165,9 +173,17 @@ export interface FutNFTMatchInterface extends utils.Interface {
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getBalance",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "getLineup", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getListedPlayers",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getOpponent",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -205,6 +221,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "lineUps", values: [string]): string;
   encodeFunctionData(functionFragment: "lineupFee", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "lineupSet",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "list",
     values: [BigNumberish, BigNumberish]
   ): string;
@@ -216,6 +236,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
     functionFragment: "listedPlayersPrices",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "matchFee", values?: undefined): string;
   encodeFunctionData(functionFragment: "maxLevel", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "mint",
@@ -227,7 +248,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "play", values: [string]): string;
+  encodeFunctionData(functionFragment: "play", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "playerToOwner",
     values: [BigNumberish]
@@ -277,7 +298,11 @@ export interface FutNFTMatchInterface extends utils.Interface {
     values: [BigNumberish[], string[], string]
   ): string;
   encodeFunctionData(
-    functionFragment: "setLinupFee",
+    functionFragment: "setLineupFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMatchFee",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -289,7 +314,6 @@ export interface FutNFTMatchInterface extends utils.Interface {
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
-  encodeFunctionData(functionFragment: "test", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "tokenByIndex",
     values: [BigNumberish]
@@ -323,8 +347,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
     functionFragment: "unlist",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "winner", values?: undefined): string;
-  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "withdraw",
+    values: [BigNumberish]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "addFormation",
@@ -337,6 +363,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cooldown", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "earnedThroughTraining",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "fee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "formationToPositions",
@@ -355,9 +385,14 @@ export interface FutNFTMatchInterface extends utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getLineup", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getListedPlayers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getOpponent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getPlayer", data: BytesLike): Result;
@@ -391,6 +426,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "lineUps", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "lineupFee", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "lineupSet", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "list", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "listedPlayers",
@@ -400,6 +436,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
     functionFragment: "listedPlayersPrices",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "matchFee", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "maxLevel", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
@@ -449,7 +486,11 @@ export interface FutNFTMatchInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setLineUp", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setLinupFee",
+    functionFragment: "setLineupFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMatchFee",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -461,7 +502,6 @@ export interface FutNFTMatchInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "test", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tokenByIndex",
     data: BytesLike
@@ -489,7 +529,6 @@ export interface FutNFTMatchInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "unlist", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "winner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
@@ -607,6 +646,8 @@ export interface FutNFTMatch extends BaseContract {
 
     cooldown(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    earnedThroughTraining(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     fee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     formationToPositions(
@@ -629,12 +670,18 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getBalance(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getLineup(
       _owner: string,
       overrides?: CallOverrides
     ): Promise<[FutNFT.LineUpStructOutput]>;
 
     getListedPlayers(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+
+    getOpponent(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     getPlayer(
       _id: BigNumberish,
@@ -679,6 +726,8 @@ export interface FutNFTMatch extends BaseContract {
 
     lineupFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    lineupSet(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+
     list(
       _playerId: BigNumberish,
       _price: BigNumberish,
@@ -694,6 +743,8 @@ export interface FutNFTMatch extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    matchFee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     maxLevel(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -712,8 +763,7 @@ export interface FutNFTMatch extends BaseContract {
     ): Promise<[string]>;
 
     play(
-      _opponent: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     playerToOwner(
@@ -786,7 +836,12 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setLinupFee(
+    setLineupFee(
+      _fee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setMatchFee(
       _fee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -802,10 +857,6 @@ export interface FutNFTMatch extends BaseContract {
     ): Promise<[boolean]>;
 
     symbol(overrides?: CallOverrides): Promise<[string]>;
-
-    test(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -852,9 +903,8 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    winner(overrides?: CallOverrides): Promise<[string]>;
-
     withdraw(
+      _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -877,6 +927,8 @@ export interface FutNFTMatch extends BaseContract {
 
   cooldown(overrides?: CallOverrides): Promise<BigNumber>;
 
+  earnedThroughTraining(overrides?: CallOverrides): Promise<BigNumber>;
+
   fee(overrides?: CallOverrides): Promise<BigNumber>;
 
   formationToPositions(
@@ -896,12 +948,18 @@ export interface FutNFTMatch extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
   getLineup(
     _owner: string,
     overrides?: CallOverrides
   ): Promise<FutNFT.LineUpStructOutput>;
 
   getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+  getOpponent(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   getPlayer(
     _id: BigNumberish,
@@ -944,6 +1002,8 @@ export interface FutNFTMatch extends BaseContract {
 
   lineupFee(overrides?: CallOverrides): Promise<BigNumber>;
 
+  lineupSet(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
   list(
     _playerId: BigNumberish,
     _price: BigNumberish,
@@ -960,6 +1020,8 @@ export interface FutNFTMatch extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  matchFee(overrides?: CallOverrides): Promise<BigNumber>;
+
   maxLevel(overrides?: CallOverrides): Promise<BigNumber>;
 
   mint(
@@ -974,8 +1036,7 @@ export interface FutNFTMatch extends BaseContract {
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   play(
-    _opponent: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   playerToOwner(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
@@ -1045,7 +1106,12 @@ export interface FutNFTMatch extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setLinupFee(
+  setLineupFee(
+    _fee: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setMatchFee(
     _fee: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1061,10 +1127,6 @@ export interface FutNFTMatch extends BaseContract {
   ): Promise<boolean>;
 
   symbol(overrides?: CallOverrides): Promise<string>;
-
-  test(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   tokenByIndex(
     index: BigNumberish,
@@ -1108,9 +1170,8 @@ export interface FutNFTMatch extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  winner(overrides?: CallOverrides): Promise<string>;
-
   withdraw(
+    _price: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1136,6 +1197,8 @@ export interface FutNFTMatch extends BaseContract {
 
     cooldown(overrides?: CallOverrides): Promise<BigNumber>;
 
+    earnedThroughTraining(overrides?: CallOverrides): Promise<BigNumber>;
+
     fee(overrides?: CallOverrides): Promise<BigNumber>;
 
     formationToPositions(
@@ -1155,12 +1218,16 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
     getLineup(
       _owner: string,
       overrides?: CallOverrides
     ): Promise<FutNFT.LineUpStructOutput>;
 
     getListedPlayers(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+    getOpponent(overrides?: CallOverrides): Promise<string>;
 
     getPlayer(
       _id: BigNumberish,
@@ -1201,6 +1268,8 @@ export interface FutNFTMatch extends BaseContract {
 
     lineupFee(overrides?: CallOverrides): Promise<BigNumber>;
 
+    lineupSet(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
     list(
       _playerId: BigNumberish,
       _price: BigNumberish,
@@ -1217,6 +1286,8 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    matchFee(overrides?: CallOverrides): Promise<BigNumber>;
+
     maxLevel(overrides?: CallOverrides): Promise<BigNumber>;
 
     mint(
@@ -1230,7 +1301,7 @@ export interface FutNFTMatch extends BaseContract {
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
-    play(_opponent: string, overrides?: CallOverrides): Promise<void>;
+    play(overrides?: CallOverrides): Promise<void>;
 
     playerToOwner(
       arg0: BigNumberish,
@@ -1297,7 +1368,9 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    setLinupFee(_fee: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    setLineupFee(_fee: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    setMatchFee(_fee: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     setMaxLevel(_level: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -1307,8 +1380,6 @@ export interface FutNFTMatch extends BaseContract {
     ): Promise<boolean>;
 
     symbol(overrides?: CallOverrides): Promise<string>;
-
-    test(overrides?: CallOverrides): Promise<void>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1346,9 +1417,7 @@ export interface FutNFTMatch extends BaseContract {
 
     unlist(_playerId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    winner(overrides?: CallOverrides): Promise<string>;
-
-    withdraw(overrides?: CallOverrides): Promise<void>;
+    withdraw(_price: BigNumberish, overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -1429,6 +1498,8 @@ export interface FutNFTMatch extends BaseContract {
 
     cooldown(overrides?: CallOverrides): Promise<BigNumber>;
 
+    earnedThroughTraining(overrides?: CallOverrides): Promise<BigNumber>;
+
     fee(overrides?: CallOverrides): Promise<BigNumber>;
 
     formationToPositions(
@@ -1451,9 +1522,15 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getBalance(overrides?: CallOverrides): Promise<BigNumber>;
+
     getLineup(_owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getListedPlayers(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getOpponent(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     getPlayer(_id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1490,6 +1567,11 @@ export interface FutNFTMatch extends BaseContract {
 
     lineupFee(overrides?: CallOverrides): Promise<BigNumber>;
 
+    lineupSet(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     list(
       _playerId: BigNumberish,
       _price: BigNumberish,
@@ -1505,6 +1587,8 @@ export interface FutNFTMatch extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    matchFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     maxLevel(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1523,8 +1607,7 @@ export interface FutNFTMatch extends BaseContract {
     ): Promise<BigNumber>;
 
     play(
-      _opponent: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     playerToOwner(
@@ -1597,7 +1680,12 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setLinupFee(
+    setLineupFee(
+      _fee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setMatchFee(
       _fee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1613,10 +1701,6 @@ export interface FutNFTMatch extends BaseContract {
     ): Promise<BigNumber>;
 
     symbol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    test(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1663,9 +1747,8 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    winner(overrides?: CallOverrides): Promise<BigNumber>;
-
     withdraw(
+      _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -1695,6 +1778,10 @@ export interface FutNFTMatch extends BaseContract {
 
     cooldown(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    earnedThroughTraining(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     fee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     formationToPositions(
@@ -1717,12 +1804,18 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getBalance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getLineup(
       _owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getListedPlayers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getOpponent(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     getPlayer(
       _id: BigNumberish,
@@ -1769,6 +1862,11 @@ export interface FutNFTMatch extends BaseContract {
 
     lineupFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    lineupSet(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     list(
       _playerId: BigNumberish,
       _price: BigNumberish,
@@ -1784,6 +1882,8 @@ export interface FutNFTMatch extends BaseContract {
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    matchFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     maxLevel(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1802,8 +1902,7 @@ export interface FutNFTMatch extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     play(
-      _opponent: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     playerToOwner(
@@ -1876,7 +1975,12 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setLinupFee(
+    setLineupFee(
+      _fee: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setMatchFee(
       _fee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1892,10 +1996,6 @@ export interface FutNFTMatch extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    test(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1942,9 +2042,8 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    winner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     withdraw(
+      _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

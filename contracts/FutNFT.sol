@@ -120,8 +120,16 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
         return super.supportsInterface(interfaceId);
     }
 
-    function withdraw() external onlyOwner {
-        (bool sent, ) = msg.sender.call{value: address(this).balance}("");
+    function getBalance() external view onlyOwner returns (uint256) {
+        return address(this).balance;
+    }
+
+    function withdraw(uint256 _price) external onlyOwner {
+        require(
+            address(this).balance > _price,
+            "The price is greater than balance!"
+        );
+        (bool sent, ) = msg.sender.call{value: _price}("");
         require(sent, "Transaction failed, could not send funds!");
     }
 }
