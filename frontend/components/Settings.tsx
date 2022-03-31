@@ -12,7 +12,6 @@ interface Props {
 }
 
 export const Settings: React.FunctionComponent<Props> = ({
-  futNFT,
   futNFTMatch,
   futNFTTraining,
   setLoader,
@@ -36,31 +35,6 @@ export const Settings: React.FunctionComponent<Props> = ({
         <a className={settingsStyles.link}>Mint</a>
       </Link>
       <h2>Set State Variables</h2>
-      <h3>FutNFT Smart Contract</h3>
-      <div className={settingsStyles.item}>
-        <span className={settingsStyles.variable}>defaultArrSize</span>
-        <input
-          type="number"
-          name="defaultArrSize"
-          id="defaultArrSize"
-          className={settingsStyles.value}
-        />
-        <span className={settingsStyles.unit}></span>
-        <button
-          className={settingsStyles.setBtn}
-          onClick={async () => {
-            await setValue(
-              futNFT.connect(signer).setDefaultArraySize,
-              parseInt(
-                (document.getElementById("defaultArrSize")! as HTMLInputElement)
-                  .value
-              )
-            );
-          }}
-        >
-          Set
-        </button>
-      </div>
       <h3>FutNFTTraining Smart Contract</h3>
       <div className={settingsStyles.item}>
         <span className={settingsStyles.variable}>cooldown</span>

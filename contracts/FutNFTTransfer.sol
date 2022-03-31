@@ -62,7 +62,9 @@ contract FutNFTTransfer is FutNFTTraining {
         (bool _sent, ) = owner.call{value: msg.value}("");
         require(_sent, "Failed to send");
         super._transfer(owner, msg.sender, _playerId);
+        ownerPlayerCount[owner]--;
         playerToOwner[_playerId] = msg.sender;
+        ownerPlayerCount[msg.sender]++;
         unlist(_playerId);
     }
 }

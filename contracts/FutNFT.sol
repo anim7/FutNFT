@@ -36,9 +36,9 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
     mapping(uint256 => uint256) listedPlayerIndex;
     mapping(uint256 => uint256) public listedPlayersPrices;
     mapping(address => LineUp) public lineUps;
+    mapping(address => uint256) ownerPlayerCount;
     uint256[] public listedPlayers;
     uint256[] playerIds;
-    uint256 private defaultArrSize = 100;
 
     event PlayerAdded(uint256 playerId);
 
@@ -63,7 +63,7 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
         view
         returns (uint256[] memory)
     {
-        uint256[] memory result = new uint256[](defaultArrSize);
+        uint256[] memory result = new uint256[](ownerPlayerCount[_owner]);
         uint256 index = 0;
         for (uint256 i = 0; i < playerIds.length; i++) {
             if (
@@ -75,10 +75,6 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
             }
         }
         return result;
-    }
-
-    function setDefaultArraySize(uint256 _size) public onlyOwner {
-        defaultArrSize = _size;
     }
 
     function ownerOf(uint256 tokenId)
@@ -99,6 +95,7 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
         players[_player.id] = _player;
         playerIds.push(_player.id);
         playerToOwner[_player.id] = msg.sender;
+        ownerPlayerCount[msg.sender]++;
         _mint(msg.sender, _player.id);
         emit PlayerAdded(_player.id);
     }
@@ -126,7 +123,7 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
 
     function withdraw(uint256 _price) external onlyOwner {
         require(
-            address(this).balance > _price,
+            address(this).balance >= _price,
             "The price is greater than balance!"
         );
         (bool sent, ) = msg.sender.call{value: _price}("");
