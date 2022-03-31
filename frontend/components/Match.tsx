@@ -397,8 +397,6 @@ class Match extends Component<PropsWithRouter, State> {
                       .connect(signer)
                       .play({
                         value: matchFee,
-                        gasLimit: 1000000,
-                        gasPrice: 30000000000,
                       });
                     await tx.wait();
                   }}

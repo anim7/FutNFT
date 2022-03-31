@@ -10,8 +10,8 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
     mapping(string => string[]) public formationToPositions;
     string[] public formations;
     string[] public allPositions;
-    uint256 public lineupFee = 3 ether;
-    uint256 public matchFee = 1 ether;
+    uint256 public lineupFee = 0.5 ether;
+    uint256 public matchFee = 3 ether;
     // uint256 public lineupFee = 0.001 ether;
     address[] public lineupSet;
 
@@ -229,7 +229,7 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
         }
         (bool sent, ) = winner.call{
             value: /*0.0015*/
-            4.5 ether
+            3.5 ether
         }("");
         require(sent, "Could not complete transaction!");
     }

@@ -35,7 +35,7 @@ interface State {
 }
 class App extends React.Component<Props, State> {
   //new
-  address = "0x66648015D6a5d5b34Da1926017C375222578092C";
+  address = "0x78CaeACcB2bBf60Ae6fB4176D1Ac2a974aE4E9F2";
   // address = "0x492EF725aE62A74922C9aC08FD41f98774DfaAB4";
   constructor(props: Props) {
     super(props);
@@ -81,7 +81,7 @@ class App extends React.Component<Props, State> {
     await this.loadContracts();
     this.setState({ blockchainDataLoaded: true });
     // await this.withdraw(3);
-    // await this.createPlayers();
+    await this.createPlayers();
     // await this.getRandomNumber();
     const l1 = await this.state.futNFTMatch.lineupSet(0);
     const l2 = await this.state.futNFTMatch.lineupSet(1);
@@ -362,77 +362,78 @@ class App extends React.Component<Props, State> {
         preferredPosition: "RB",
         suitablePositions: ["RMF"],
       };
-      setTimeout(async () => {
-        await this.state.futNFT.connect(signer).mint(player22);
-        await this.state.futNFTTransfer.connect(signer).list(2, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(4, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(6, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(8, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(10, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(12, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(14, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(16, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(18, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(20, 0.001);
-        await this.state.futNFTTransfer.connect(signer).list(22, 0.001);
-      }, 10000);
-    } else {
-      await this.state.futNFTTraining.connect(signer).transferPlayer(2, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(4, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(6, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(8, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(10, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(12, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(14, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(16, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(18, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(20, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
-      await this.state.futNFTTraining.connect(signer).transferPlayer(22, {
-        value: 0.001,
-        gasLimit: 2000000,
-        gasPrice: 30000000000,
-      });
+      await this.state.futNFT.connect(signer).mint(player22);
+      // setTimeout(async () => {
+      //   await this.state.futNFTTransfer.connect(signer).list(2, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(4, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(6, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(8, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(10, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(12, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(14, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(16, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(18, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(20, 0.001);
+      //   await this.state.futNFTTransfer.connect(signer).list(22, 0.001);
+      // }, 10000);
     }
+    // else {
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(2, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(4, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(6, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(8, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(10, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(12, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(14, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(16, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(18, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(20, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    //   await this.state.futNFTTraining.connect(signer).transferPlayer(22, {
+    //     value: 0.001,
+    //     gasLimit: 2000000,
+    //     gasPrice: 30000000000,
+    //   });
+    // }
   }
 
   async loadWeb3() {
