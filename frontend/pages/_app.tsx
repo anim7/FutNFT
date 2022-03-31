@@ -14,7 +14,6 @@ import { BigNumber, ethers } from "ethers";
 import Loader from "../components/Loader";
 import PlayerInformation from "../components/PlayerInformation";
 import { Player } from "../global/player";
-import getPlayersByOwner from "../utils/getPlayersByOwner";
 
 interface Props {
   Component: NextComponentType<NextPageContext, any, {}>;
