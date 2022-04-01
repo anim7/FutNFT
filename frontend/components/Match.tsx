@@ -114,60 +114,96 @@ class Match extends Component<PropsWithRouter, State> {
   }
 
   getUserLineup = async () => {
-    const lineup = await this.props.futNFTMatch.lineUps(this.props.account);
-    this.setState({ lineup: lineup });
+    try {
+      const lineup = await this.props.futNFTMatch.lineUps(this.props.account);
+      this.setState({ lineup: lineup });
+    } catch (err) {
+      document.getElementById("errorAlert")!.style.display = "inline-block";
+      this.props.setLoader(false);
+    }
   };
 
   getPlayersByOwner = async (owner: string) => {
-    const players = await getPlayersByOwnerUtil(this.props.futNFT, owner);
-    this.setState({
-      playerIds: players,
-    });
+    try {
+      const players = await getPlayersByOwnerUtil(this.props.futNFT, owner);
+      this.setState({
+        playerIds: players,
+      });
+    } catch (err) {
+      document.getElementById("errorAlert")!.style.display = "inline-block";
+      this.props.setLoader(false);
+    }
   };
 
   getPlayers = async (playerIds: number[]) => {
-    let players: Player[] = [];
-    playerIds.forEach(async (playerId) => {
-      const player = await getPlayer(this.props.futNFT, playerId);
-      players.push(player);
-    });
-    setTimeout(() => {
-      this.setState({ players: players });
+    try {
+      let players: Player[] = [];
+      playerIds.forEach(async (playerId) => {
+        const player = await getPlayer(this.props.futNFT, playerId);
+        players.push(player);
+      });
+      setTimeout(() => {
+        this.setState({ players: players });
+        this.props.setLoader(false);
+      }, 1000);
+    } catch (err) {
+      document.getElementById("errorAlert")!.style.display = "inline-block";
       this.props.setLoader(false);
-    }, 1000);
+    }
   };
 
   enoughPlayersAvailable = () => {
-    if (this.state.playerIds.length >= 11) {
-      let length = 0;
-      this.state.playerIds.forEach((playerId) => {
-        if (playerId.toString() !== "0") {
-          length++;
+    try {
+      if (this.state.playerIds.length >= 11) {
+        let length = 0;
+        this.state.playerIds.forEach((playerId) => {
+          if (playerId.toString() !== "0") {
+            length++;
+          }
+        });
+        if (length >= 11) {
+          return true;
         }
-      });
-      if (length >= 11) {
-        return true;
       }
+      return false;
+    } catch (err) {
+      document.getElementById("errorAlert")!.style.display = "inline-block";
+      this.props.setLoader(false);
+      return false;
     }
-    return false;
   };
 
   getAllFormations = async () => {
-    const formations = await this.props.futNFTMatch.getAllFormations();
-    this.setState({ formations: formations });
+    try {
+      const formations = await this.props.futNFTMatch.getAllFormations();
+      this.setState({ formations: formations });
+    } catch (err) {
+      document.getElementById("errorAlert")!.style.display = "inline-block";
+      this.props.setLoader(false);
+    }
   };
 
   getPositionsFromFormation = async (formation: string) => {
-    const positions = await this.props.futNFTMatch.getPositionsFromFormation(
-      formation
-    );
-    this.setState({ positionsInFormation: positions });
+    try {
+      const positions = await this.props.futNFTMatch.getPositionsFromFormation(
+        formation
+      );
+      this.setState({ positionsInFormation: positions });
+    } catch (err) {
+      document.getElementById("errorAlert")!.style.display = "inline-block";
+      this.props.setLoader(false);
+    }
   };
 
   setPlayerPosition = (player: Player, position: string) => {
-    const newLineupPlayersToPositions = this.state.lineupPlayersToPositions;
-    newLineupPlayersToPositions.set(player, position);
-    this.setState({ lineupPlayersToPositions: newLineupPlayersToPositions });
+    try {
+      const newLineupPlayersToPositions = this.state.lineupPlayersToPositions;
+      newLineupPlayersToPositions.set(player, position);
+      this.setState({ lineupPlayersToPositions: newLineupPlayersToPositions });
+    } catch (err) {
+      document.getElementById("errorAlert")!.style.display = "inline-block";
+      this.props.setLoader(false);
+    }
   };
 
   render() {
@@ -349,32 +385,38 @@ class Match extends Component<PropsWithRouter, State> {
               <button
                 className={matchStyles.btn}
                 onClick={async () => {
-                  this.props.setLoader(true);
-                  const lineupPlayers = this.state.lineUpPlayers;
-                  const playerIds: number[] = [];
-                  const positions: string[] = [];
-                  const formation = this.state.formation;
-                  lineupPlayers.forEach((player) => {
-                    playerIds.push(player.id);
-                    const position: string =
-                      this.state.lineupPlayersToPositions.get(player)!;
-                    positions.push(position);
-                  });
-                  const provider: ethers.providers.Web3Provider = (
-                    window as any
-                  ).provider;
-                  const signer = provider.getSigner();
-                  const fee = await this.props.futNFTMatch.lineupFee();
-                  const tx = await this.props.futNFTMatch
-                    .connect(signer)
-                    .setLineUp(playerIds, positions, formation, {
-                      value: fee,
-                      gasLimit: 1000000,
-                      gasPrice: 30000000000,
+                  try {
+                    this.props.setLoader(true);
+                    const lineupPlayers = this.state.lineUpPlayers;
+                    const playerIds: number[] = [];
+                    const positions: string[] = [];
+                    const formation = this.state.formation;
+                    lineupPlayers.forEach((player) => {
+                      playerIds.push(player.id);
+                      const position: string =
+                        this.state.lineupPlayersToPositions.get(player)!;
+                      positions.push(position);
                     });
-                  await tx.wait();
-                  await this.getUserLineup();
-                  this.props.setLoader(false);
+                    const provider: ethers.providers.Web3Provider = (
+                      window as any
+                    ).provider;
+                    const signer = provider.getSigner();
+                    const fee = await this.props.futNFTMatch.lineupFee();
+                    const tx = await this.props.futNFTMatch
+                      .connect(signer)
+                      .setLineUp(playerIds, positions, formation, {
+                        value: fee,
+                        gasLimit: 1000000,
+                        gasPrice: 30000000000,
+                      });
+                    await tx.wait();
+                    await this.getUserLineup();
+                    this.props.setLoader(false);
+                  } catch (err) {
+                    document.getElementById("errorAlert")!.style.display =
+                      "inline-block";
+                    this.props.setLoader(false);
+                  }
                 }}
               >
                 Set Lineup
@@ -388,17 +430,23 @@ class Match extends Component<PropsWithRouter, State> {
                 <h2>Are you ready to face other teams?</h2>
                 <button
                   onClick={async () => {
-                    const provider: ethers.providers.Web3Provider = (
-                      window as any
-                    ).provider;
-                    const signer = provider.getSigner();
-                    const matchFee = await this.props.futNFTMatch.matchFee();
-                    const tx = await this.props.futNFTMatch
-                      .connect(signer)
-                      .play({
-                        value: matchFee,
-                      });
-                    await tx.wait();
+                    try {
+                      const provider: ethers.providers.Web3Provider = (
+                        window as any
+                      ).provider;
+                      const signer = provider.getSigner();
+                      const matchFee = await this.props.futNFTMatch.matchFee();
+                      const tx = await this.props.futNFTMatch
+                        .connect(signer)
+                        .play({
+                          value: matchFee,
+                        });
+                      await tx.wait();
+                    } catch (err) {
+                      document.getElementById("errorAlert")!.style.display =
+                        "inline-block";
+                      this.props.setLoader(false);
+                    }
                   }}
                 >
                   Play Now!

@@ -8,6 +8,7 @@ import { ethers } from "ethers";
 import Popup from "./Popup";
 import PlayerInformation from "./PlayerInformation";
 import Search from "./Search";
+import Filter from "./Filter";
 
 interface Props {
   account: string;
@@ -17,6 +18,7 @@ interface Props {
   setLoader: (loader: boolean) => void;
   setPlayerInfo: (player: PlayerInterface) => void;
   setPlayerInfoActivated: (activated: boolean) => void;
+  futNFTTraining: ethers.Contract;
 }
 interface State {
   players: PlayerInterface[];
@@ -64,9 +66,57 @@ export class Sell extends Component<Props, State> {
     }, 1000);
   };
 
+  applyFilters = async (
+    name: string,
+    minLevel: number,
+    maxLevel: number,
+    minPrice: number,
+    maxPrice: number
+  ) => {
+    try {
+      this.props.setLoader(true);
+      await this.getPlayers();
+      if (name.length > 0) {
+        setTimeout(() => {
+          const search = name;
+          const newPlayers = this.state.players.filter((player) =>
+            player.name.toLowerCase().includes(search.toLowerCase())
+          );
+          this.setState({ players: newPlayers });
+          this.props.setLoader(false);
+        }, 1500);
+      }
+      if (minLevel > 0 || maxLevel > 0) {
+        setTimeout(() => {
+          const newPlayers = this.state.players.filter((player) => {
+            if (minLevel > 0 && maxLevel > 0 && maxLevel >= minLevel) {
+              return player.level >= minLevel && player.level <= maxLevel;
+            } else if (minLevel > 0 && maxLevel === 0) {
+              return player.level >= minLevel;
+            } else if (minLevel === 0 && maxLevel > 0) {
+              return player.level <= maxLevel;
+            }
+            return true;
+          });
+          console.log(minLevel, maxLevel);
+          this.setState({ players: newPlayers });
+          this.props.setLoader(false);
+        }, 1500);
+      }
+    } catch (err) {
+      document.getElementById("errorAlert")!.style.display = "inline-block";
+      this.props.setLoader(false);
+    }
+  };
+
   render() {
     return (
       <>
+        <Filter
+          handleClick={this.applyFilters}
+          futNFTTraining={this.props.futNFTTraining}
+          priceEnabled={false}
+        />
         <Search
           id="sellSearch"
           handleClick={async () => {

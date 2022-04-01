@@ -12,6 +12,7 @@ interface Props {
   futNFTTransfer: ethers.Contract;
   setPlayerInfo: (player: Player) => void;
   setPlayerInfoActivated: (activated: boolean) => void;
+  futNFTTraining: ethers.Contract;
 }
 
 const Sell: NextPage<Props> = ({
@@ -22,6 +23,7 @@ const Sell: NextPage<Props> = ({
   futNFTTransfer,
   setPlayerInfo,
   setPlayerInfoActivated,
+  futNFTTraining,
 }) => {
   return (
     <SellComponent
@@ -32,6 +34,7 @@ const Sell: NextPage<Props> = ({
       futNFT={futNFT}
       setLoader={setLoader}
       futNFTTransfer={futNFTTransfer}
+      futNFTTraining={futNFTTraining}
     />
   );
 };

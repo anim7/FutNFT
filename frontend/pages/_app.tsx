@@ -80,7 +80,7 @@ class App extends React.Component<Props, State> {
     await this.loadContracts();
     this.setState({ blockchainDataLoaded: true });
     // await this.withdraw(3);
-    await this.createPlayers();
+    // await this.createPlayers();
     // await this.getRandomNumber();
     const l1 = await this.state.futNFTMatch.lineupSet(0);
     const l2 = await this.state.futNFTMatch.lineupSet(1);
@@ -552,6 +552,11 @@ class App extends React.Component<Props, State> {
           futNFTMatch={this.state.futNFTMatch}
         />
         {this.state.loader && <Loader />}
+        <Alert
+          message="Some Error Occurred!"
+          okEnabled={false}
+          id="errorAlert"
+        />
         <Alert
           message="Non-Ethereum browser detected. Consider using MetaMask!"
           okEnabled={true}

@@ -7,6 +7,7 @@ import { Player } from "../../global/player";
 interface Props {
   futNFT: ethers.Contract;
   futNFTTransfer: ethers.Contract;
+  futNFTTraining: ethers.Contract;
   setLoader: (loader: boolean) => void;
   account: string;
   setPlayerInfo: (player: Player) => void;
@@ -20,6 +21,7 @@ const Buy: NextPage<Props> = ({
   account,
   setPlayerInfo,
   setPlayerInfoActivated,
+  futNFTTraining,
 }) => {
   return (
     <BuyComponent
@@ -29,6 +31,7 @@ const Buy: NextPage<Props> = ({
       setLoader={setLoader}
       futNFTTransfer={futNFTTransfer}
       account={account}
+      futNFTTraining={futNFTTraining}
     />
   );
 };
