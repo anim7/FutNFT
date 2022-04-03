@@ -40,11 +40,24 @@
     }
   }
   .rightContainer {
+    @include flexContainer(center, center, row, wrap);
     .address {
       background-color: rgb(0, 0, 36);
       font-size: 1rem;
       cursor: pointer;
+      margin-right: 0.3rem;
+    }
+    div {
       margin-right: 1rem;
+      .deposit {
+        background-color: rgb(0, 0, 36);
+        height: 3rem;
+        width: 3rem;
+        cursor: pointer;
+        .depositImage {
+          filter: invert(100);
+        }
+      }
     }
   }
 }

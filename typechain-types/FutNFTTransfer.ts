@@ -80,7 +80,6 @@ export interface FutNFTTransferInterface extends utils.Interface {
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setCooldown(uint256)": FunctionFragment;
-    "setDefaultArraySize(uint256)": FunctionFragment;
     "setFee(uint256)": FunctionFragment;
     "setMaxLevel(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
@@ -178,10 +177,6 @@ export interface FutNFTTransferInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setCooldown",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setDefaultArraySize",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -298,10 +293,6 @@ export interface FutNFTTransferInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setCooldown",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setDefaultArraySize",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setFee", data: BytesLike): Result;
@@ -553,11 +544,6 @@ export interface FutNFTTransfer extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setDefaultArraySize(
-      _size: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setFee(
       _fee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -736,11 +722,6 @@ export interface FutNFTTransfer extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setDefaultArraySize(
-    _size: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setFee(
     _fee: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -914,11 +895,6 @@ export interface FutNFTTransfer extends BaseContract {
 
     setCooldown(
       _cooldown: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setDefaultArraySize(
-      _size: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1139,11 +1115,6 @@ export interface FutNFTTransfer extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setDefaultArraySize(
-      _size: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setFee(
       _fee: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1331,11 +1302,6 @@ export interface FutNFTTransfer extends BaseContract {
 
     setCooldown(
       _cooldown: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setDefaultArraySize(
-      _size: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

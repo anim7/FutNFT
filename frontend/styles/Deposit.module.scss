@@ -1,0 +1,56 @@
+@import "mixins";
+
+.depositContainer {
+  @include flexContainer(center, center, column, nowrap);
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 14;
+  backdrop-filter: blur(2px);
+  .close {
+    background-color: rgb(0, 0, 39);
+    position: relative;
+    left: 8rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+    border-radius: 0.4rem;
+  }
+  .deposit {
+    @include flexContainer(center, center, column, nowrap);
+    background-color: rgb(0, 0, 39);
+    border: 0.1rem solid #007bff;
+    padding: 1rem;
+    border-radius: 0.4rem;
+    .setValue {
+      @include flexContainer(space-between, center, row, nowrap);
+      margin: 0.7rem 0;
+      p {
+        font-size: 1.4rem;
+      }
+      button {
+        @include flexContainer(center, center, row, nowrap);
+        margin: 0 1rem;
+        background-color: #007bff;
+        font-size: 1.6rem;
+        border-radius: 0.4rem;
+        cursor: pointer;
+        height: 1.7rem;
+        width: 1.7rem;
+        &:hover {
+          background-color: #0063cc;
+        }
+      }
+    }
+    button {
+      width: 100%;
+      font-size: 1.3rem;
+      border-radius: 0.4rem;
+      background-color: rgb(0, 141, 0);
+      cursor: pointer;
+      &:hover {
+        background-color: rgb(0, 165, 0);
+      }
+    }
+  }
+}

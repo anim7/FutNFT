@@ -26,6 +26,7 @@ interface State {
   lineupSet: boolean;
   formation: string;
   lineup: Lineup;
+  teamRating: string;
 }
 interface PropsWithRouter extends Props {
   router: NextRouter;
@@ -49,6 +50,7 @@ class Match extends Component<PropsWithRouter, State> {
       lineupSet: false,
       formation: "",
       lineup: { formation: "", playerIds: [], positions: [], isValid: false },
+      teamRating: "",
     };
   }
 
@@ -60,6 +62,7 @@ class Match extends Component<PropsWithRouter, State> {
       (document.getElementById("formation")! as HTMLSelectElement).value
     );
     await this.getPlayers(this.state.playerIds);
+    await this.getTeamRating();
     const playersAvailable = this.enoughPlayersAvailable();
     if (!playersAvailable) {
       this.props.router.push("/");
@@ -112,6 +115,24 @@ class Match extends Component<PropsWithRouter, State> {
       }
     }
   }
+
+  getTeamRating = async () => {
+    try {
+      this.props.setLoader(true);
+      const teamRating = await this.props.futNFTMatch.getTeamRating(
+        this.props.account
+      );
+      console.log("Team rating:");
+      console.log(teamRating);
+      setTimeout(() => {
+        this.setState({ teamRating: teamRating.toString() });
+        this.props.setLoader(false);
+      }, 1500);
+    } catch (err) {
+      document.getElementById("errorAlert")!.style.display = "inline-block";
+      this.props.setLoader(false);
+    }
+  };
 
   getUserLineup = async () => {
     try {
@@ -220,6 +241,9 @@ class Match extends Component<PropsWithRouter, State> {
               ? "Select Players for your Lineup"
               : "You have already set your lineup. Do you want to reset it again?"}
           </h2>
+          {this.state.teamRating.length > 0 && (
+            <h3>{this.state.teamRating} LVL</h3>
+          )}
           <select
             name="formation"
             id="formation"
@@ -411,6 +435,7 @@ class Match extends Component<PropsWithRouter, State> {
                       });
                     await tx.wait();
                     await this.getUserLineup();
+                    await this.getTeamRating();
                     this.props.setLoader(false);
                   } catch (err) {
                     document.getElementById("errorAlert")!.style.display =
@@ -438,11 +463,14 @@ class Match extends Component<PropsWithRouter, State> {
                       const matchFee = await this.props.futNFTMatch.matchFee();
                       const tx = await this.props.futNFTMatch
                         .connect(signer)
-                        .play({
-                          value: matchFee,
-                        });
+                        .play
+                        // value: matchFee,
+                        // gasLimit: 2000000,
+                        // gasPrice: 30000000000,
+                        ();
                       await tx.wait();
                     } catch (err) {
+                      console.error(err);
                       document.getElementById("errorAlert")!.style.display =
                         "inline-block";
                       this.props.setLoader(false);

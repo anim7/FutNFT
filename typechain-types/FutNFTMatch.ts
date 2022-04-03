@@ -73,6 +73,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "cooldown()": FunctionFragment;
+    "deposit()": FunctionFragment;
     "earnedThroughTraining()": FunctionFragment;
     "fee()": FunctionFragment;
     "formationToPositions(string,uint256)": FunctionFragment;
@@ -89,6 +90,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "getPlayersByOwner(address)": FunctionFragment;
     "getPositionsFromFormation(string)": FunctionFragment;
     "getRandomNumber()": FunctionFragment;
+    "getTeamRating(address)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "levelPercentNoPosition()": FunctionFragment;
     "levelPercentSuitablePosition()": FunctionFragment;
@@ -104,6 +106,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "ownersToDeposits(address)": FunctionFragment;
     "play()": FunctionFragment;
     "playerToOwner(uint256)": FunctionFragment;
     "randomResult()": FunctionFragment;
@@ -112,7 +115,6 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setCooldown(uint256)": FunctionFragment;
-    "setDefaultArraySize(uint256)": FunctionFragment;
     "setFee(uint256)": FunctionFragment;
     "setLevelPercentNoPosition(uint256)": FunctionFragment;
     "setLevelPercentSuitablePosition(uint256)": FunctionFragment;
@@ -132,6 +134,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
     "transferPlayer(uint256)": FunctionFragment;
     "unlist(uint256)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
+    "withdrawDeposit(uint256)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -148,6 +151,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(functionFragment: "cooldown", values?: undefined): string;
+  encodeFunctionData(functionFragment: "deposit", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "earnedThroughTraining",
     values?: undefined
@@ -207,6 +211,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getTeamRating",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
   ): string;
@@ -248,6 +256,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "ownersToDeposits",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "play", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "playerToOwner",
@@ -275,10 +287,6 @@ export interface FutNFTMatchInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setCooldown",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setDefaultArraySize",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -351,6 +359,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
     functionFragment: "withdraw",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawDeposit",
+    values: [BigNumberish]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "addFormation",
@@ -363,6 +375,7 @@ export interface FutNFTMatchInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cooldown", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "earnedThroughTraining",
     data: BytesLike
@@ -413,6 +426,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getTeamRating",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
@@ -442,6 +459,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "ownersToDeposits",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "play", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "playerToOwner",
@@ -469,10 +490,6 @@ export interface FutNFTMatchInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setCooldown",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setDefaultArraySize",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setFee", data: BytesLike): Result;
@@ -530,6 +547,10 @@ export interface FutNFTMatchInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "unlist", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawDeposit",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -646,6 +667,10 @@ export interface FutNFTMatch extends BaseContract {
 
     cooldown(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    deposit(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     earnedThroughTraining(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     fee(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -707,6 +732,11 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getTeamRating(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -762,6 +792,11 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    ownersToDeposits(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     play(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -806,11 +841,6 @@ export interface FutNFTMatch extends BaseContract {
 
     setCooldown(
       _cooldown: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setDefaultArraySize(
-      _size: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -907,6 +937,11 @@ export interface FutNFTMatch extends BaseContract {
       _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    withdrawDeposit(
+      _price: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   addFormation(
@@ -926,6 +961,10 @@ export interface FutNFTMatch extends BaseContract {
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   cooldown(overrides?: CallOverrides): Promise<BigNumber>;
+
+  deposit(
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   earnedThroughTraining(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -985,6 +1024,8 @@ export interface FutNFTMatch extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  getTeamRating(_owner: string, overrides?: CallOverrides): Promise<BigNumber>;
+
   isApprovedForAll(
     owner: string,
     operator: string,
@@ -1035,6 +1076,8 @@ export interface FutNFTMatch extends BaseContract {
 
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  ownersToDeposits(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
   play(
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -1076,11 +1119,6 @@ export interface FutNFTMatch extends BaseContract {
 
   setCooldown(
     _cooldown: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setDefaultArraySize(
-    _size: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1175,6 +1213,11 @@ export interface FutNFTMatch extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  withdrawDeposit(
+    _price: BigNumberish,
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     addFormation(
       formation: string,
@@ -1196,6 +1239,8 @@ export interface FutNFTMatch extends BaseContract {
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     cooldown(overrides?: CallOverrides): Promise<BigNumber>;
+
+    deposit(overrides?: CallOverrides): Promise<void>;
 
     earnedThroughTraining(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1251,6 +1296,11 @@ export interface FutNFTMatch extends BaseContract {
 
     getRandomNumber(overrides?: CallOverrides): Promise<string>;
 
+    getTeamRating(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1301,6 +1351,11 @@ export interface FutNFTMatch extends BaseContract {
 
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+    ownersToDeposits(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     play(overrides?: CallOverrides): Promise<void>;
 
     playerToOwner(
@@ -1341,11 +1396,6 @@ export interface FutNFTMatch extends BaseContract {
 
     setCooldown(
       _cooldown: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setDefaultArraySize(
-      _size: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1418,6 +1468,11 @@ export interface FutNFTMatch extends BaseContract {
     unlist(_playerId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     withdraw(_price: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    withdrawDeposit(
+      _price: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -1498,6 +1553,10 @@ export interface FutNFTMatch extends BaseContract {
 
     cooldown(overrides?: CallOverrides): Promise<BigNumber>;
 
+    deposit(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     earnedThroughTraining(overrides?: CallOverrides): Promise<BigNumber>;
 
     fee(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1553,6 +1612,11 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    getTeamRating(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1606,6 +1670,11 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    ownersToDeposits(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     play(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1650,11 +1719,6 @@ export interface FutNFTMatch extends BaseContract {
 
     setCooldown(
       _cooldown: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setDefaultArraySize(
-      _size: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1751,6 +1815,11 @@ export interface FutNFTMatch extends BaseContract {
       _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    withdrawDeposit(
+      _price: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1777,6 +1846,10 @@ export interface FutNFTMatch extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     cooldown(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    deposit(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     earnedThroughTraining(
       overrides?: CallOverrides
@@ -1841,6 +1914,11 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    getTeamRating(
+      _owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     isApprovedForAll(
       owner: string,
       operator: string,
@@ -1901,6 +1979,11 @@ export interface FutNFTMatch extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    ownersToDeposits(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     play(
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1945,11 +2028,6 @@ export interface FutNFTMatch extends BaseContract {
 
     setCooldown(
       _cooldown: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setDefaultArraySize(
-      _size: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -2045,6 +2123,11 @@ export interface FutNFTMatch extends BaseContract {
     withdraw(
       _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawDeposit(
+      _price: BigNumberish,
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

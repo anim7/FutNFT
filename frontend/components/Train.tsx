@@ -7,7 +7,6 @@ import getPlayersByOwner from "../utils/getPlayersByOwner";
 import { getPlayer } from "../utils/getPlayer";
 import Alert from "./Alert";
 import Confirm from "./Confirm";
-import Search from "./Search";
 import Filter from "./Filter";
 
 interface Props {
@@ -257,25 +256,6 @@ export class Train extends Component<Props, State> {
           id="cooldownAlert"
           message="Cooldown period is not over! Cannot level up!"
           okEnabled={true}
-        />
-        <Search
-          id="trainSearch"
-          handleClick={async () => {
-            await this.getPlayers();
-            this.props.setLoader(true);
-            setTimeout(() => {
-              const search = (
-                document.getElementById("trainSearch")! as HTMLInputElement
-              ).value;
-              if (search != "") {
-                const newPlayers = this.state.players.filter((player) =>
-                  player.name.toLowerCase().includes(search.toLowerCase())
-                );
-                this.setState({ players: newPlayers });
-              }
-              this.props.setLoader(false);
-            }, 1500);
-          }}
         />
         {this.state.confirm && (
           <Confirm

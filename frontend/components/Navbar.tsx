@@ -1,7 +1,9 @@
 import { ethers } from "ethers";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { Component, useEffect, useState } from "react";
+import { Lineup } from "../global/lineup";
 import navStyles from "../styles/Navbar.module.scss";
 import { getOwner } from "../utils/getOwner";
 import { handleLinkClick } from "../utils/navUtils";
@@ -11,9 +13,12 @@ interface Props {
   account: string;
   blockchainDataLoaded: boolean;
   futNFTMatch: ethers.Contract;
+  setDepositTab: (depositTab: boolean) => void;
+  setWithdrawTab: (withdrawTab: boolean) => void;
 }
 interface State {
   owner: string;
+  lineup: Lineup;
 }
 
 const Navbar: React.FunctionComponent<Props> = (props) => {
@@ -46,18 +51,30 @@ class NavbarClass extends Component<Props, State> {
     super(props);
     this.state = {
       owner: "0x0",
+      lineup: {
+        formation: "",
+        isValid: false,
+        playerIds: [],
+        positions: [],
+      },
     };
   }
 
   async componentDidMount() {
     if (this.props.blockchainDataLoaded) {
-      this.setState({ owner: await getOwner(this.props.futNFTMatch) });
+      this.setState({
+        owner: await getOwner(this.props.futNFTMatch),
+        lineup: await this.props.futNFTMatch.lineUps(this.props.account),
+      });
     }
   }
 
   async componentDidUpdate() {
     if (this.props.blockchainDataLoaded) {
-      this.setState({ owner: await getOwner(this.props.futNFTMatch) });
+      this.setState({
+        owner: await getOwner(this.props.futNFTMatch),
+        lineup: await this.props.futNFTMatch.lineUps(this.props.account),
+      });
     }
   }
 
@@ -125,6 +142,40 @@ class NavbarClass extends Component<Props, State> {
                   this.props.account.substring(this.props.account.length - 5)
                 : this.props.account}
             </button>
+            <div>
+              <button
+                className={navStyles.deposit}
+                onClick={() => {
+                  if (this.state.lineup.isValid) {
+                    this.props.setDepositTab(true);
+                  }
+                }}
+              >
+                <Image
+                  src="/deposit.png"
+                  className={navStyles.depositImage}
+                  alt="Deposit"
+                  width={30}
+                  height={30}
+                />
+              </button>
+              <button
+                className={navStyles.deposit}
+                onClick={() => {
+                  if (this.state.lineup.isValid) {
+                    this.props.setWithdrawTab(true);
+                  }
+                }}
+              >
+                <Image
+                  src="/withdraw.png"
+                  className={navStyles.depositImage}
+                  alt="Deposit"
+                  width={30}
+                  height={30}
+                />
+              </button>
+            </div>
           </div>
         </nav>
         <Alert message="Copied!" okEnabled={false} id="copied" />

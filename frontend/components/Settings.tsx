@@ -5,9 +5,7 @@ import settingsStyles from "../styles/Settings.module.scss";
 
 interface Props {
   setLoader: (loader: boolean) => void;
-  futNFT: ethers.Contract;
   futNFTTraining: ethers.Contract;
-  futNFTTransfer: ethers.Contract;
   futNFTMatch: ethers.Contract;
 }
 

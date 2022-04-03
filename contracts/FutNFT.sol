@@ -126,7 +126,8 @@ contract FutNFT is ERC721, ERC721Enumerable, Ownable {
             address(this).balance >= _price,
             "The price is greater than balance!"
         );
-        (bool sent, ) = msg.sender.call{value: _price}("");
+        address to = payable(msg.sender);
+        (bool sent, ) = to.call{value: _price}("");
         require(sent, "Transaction failed, could not send funds!");
     }
 }

@@ -5,19 +5,19 @@ import "./FutNFTTransfer.sol";
 import "./VRFConsumer.sol";
 
 contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
-    uint256 public levelPercentSuitablePosition;
-    uint256 public levelPercentNoPosition;
+    uint256 public levelPercentSuitablePosition = 75;
+    uint256 public levelPercentNoPosition = 50;
     mapping(string => string[]) public formationToPositions;
     string[] public formations;
     string[] public allPositions;
-    uint256 public lineupFee = 0.5 ether;
+    uint256 public lineupFee = 0.2 ether;
     uint256 public matchFee = 3 ether;
-    // uint256 public lineupFee = 0.001 ether;
     address[] public lineupSet;
+    mapping(address => uint256) public ownersToDeposits;
 
     modifier playersOwned(uint256[11] memory _playerIds) {
         for (uint256 i = 0; i < _playerIds.length; i++) {
-            require(ownerOf(_playerIds[i]) == msg.sender);
+            require(ownerOf(_playerIds[i]) == msg.sender, "Players not owned!");
         }
         _;
     }
@@ -89,6 +89,41 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
         return lineUps[_owner];
     }
 
+    function deposit() public payable lineUpSet(msg.sender) {
+        require(msg.value >= 1 ether, "Not enough funds sent!");
+        ownersToDeposits[msg.sender] += msg.value;
+        if (ownersToDeposits[msg.sender] < 2 ether) {
+            lineupSet.push(msg.sender);
+        }
+    }
+
+    function _removeFromLineupSet(address _owner) internal {
+        address[] memory newLineupSet;
+        uint256 subFromIndex = 0;
+        for (uint256 i = 0; i < lineupSet.length; i++) {
+            if (lineupSet[i] != _owner) {
+                newLineupSet[i - subFromIndex] = lineupSet[i];
+            } else {
+                subFromIndex++;
+            }
+        }
+        lineupSet = newLineupSet;
+    }
+
+    function withdrawDeposit(uint256 _price) public payable {
+        require(
+            ownersToDeposits[msg.sender] >= _price,
+            "Enough funds not deposited!"
+        );
+        address to = payable(msg.sender);
+        (bool sent, ) = to.call{value: _price}("");
+        ownersToDeposits[msg.sender] -= _price;
+        require(sent, "Could not complete the transaction");
+        if (ownersToDeposits[msg.sender] < 1 ether) {
+            _removeFromLineupSet(msg.sender);
+        }
+    }
+
     function addFormation(string memory formation, string[] memory positions)
         public
         onlyOwner
@@ -127,12 +162,11 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
     ) external payable playersOwned(_playerIds) returns (uint256) {
         require(msg.value == lineupFee, "Required fee not sent!");
         lineUps[msg.sender] = LineUp(_playerIds, _positions, _formation, true);
-        lineupSet.push(msg.sender);
-        return _getTeamRating(msg.sender);
+        return getTeamRating(msg.sender);
     }
 
-    function _getTeamRating(address _owner)
-        internal
+    function getTeamRating(address _owner)
+        public
         view
         lineUpSet(_owner)
         returns (uint256)
@@ -185,13 +219,13 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
         return level;
     }
 
-    function getOpponent() public lineUpSet(msg.sender) returns(address) {
+    function getOpponent() public lineUpSet(msg.sender) returns (address) {
         require(lineupSet.length > 1, "Players not available!");
         getRandomNumber();
         randomResult = (randomResult % lineupSet.length) + 1;
         address opponent = lineupSet[randomResult - 1];
-        if(msg.sender == opponent) {
-            if(randomResult == lineupSet.length) {
+        if (msg.sender == opponent) {
+            if (randomResult == lineupSet.length) {
                 opponent = lineupSet[randomResult - 2];
             } else {
                 opponent = lineupSet[randomResult];
@@ -200,15 +234,14 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
         return opponent;
     }
 
-    function play()
-        external
-        payable
-        lineUpSet(msg.sender)
-    {
-        require(msg.value == matchFee, "Required fee not sent!");
+    function play() external payable lineUpSet(msg.sender) {
+        require(
+            ownersToDeposits[msg.sender] >= 1 ether,
+            "Does not have enough funds in deposits!"
+        );
         address _opponent = getOpponent();
-        uint256 teamRating = _getTeamRating(msg.sender);
-        uint256 opponentTeamRating = _getTeamRating(_opponent);
+        uint256 teamRating = getTeamRating(msg.sender);
+        uint256 opponentTeamRating = getTeamRating(_opponent);
         uint256 winProbability = 50;
         if (teamRating > opponentTeamRating) {
             winProbability = 50 + ((teamRating - opponentTeamRating) * 3);
@@ -217,20 +250,22 @@ contract FutNFTMatch is FutNFTTransfer, VRFConsumer {
         }
         getRandomNumber();
         randomResult = (randomResult % 100) + 1;
-        address payable winner;
         if (randomResult <= winProbability) {
             ownerHistory[msg.sender].winCount++;
             ownerHistory[_opponent].lossCount++;
-            winner = payable(msg.sender);
+            ownersToDeposits[_opponent] -= 1 ether;
+            if (ownersToDeposits[_opponent] < 1 ether) {
+                _removeFromLineupSet(_opponent);
+            }
+            ownersToDeposits[msg.sender] += 0.5 ether;
         } else {
             ownerHistory[msg.sender].lossCount++;
             ownerHistory[_opponent].winCount++;
-            winner = payable(_opponent);
+            ownersToDeposits[msg.sender] -= 1 ether;
+            if (ownersToDeposits[msg.sender] < 1 ether) {
+                _removeFromLineupSet(msg.sender);
+            }
+            ownersToDeposits[_opponent] += 0.5 ether;
         }
-        (bool sent, ) = winner.call{
-            value: /*0.0015*/
-            3.5 ether
-        }("");
-        require(sent, "Could not complete transaction!");
     }
 }

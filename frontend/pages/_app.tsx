@@ -14,6 +14,8 @@ import { BigNumber, ethers } from "ethers";
 import Loader from "../components/Loader";
 import PlayerInformation from "../components/PlayerInformation";
 import { Player } from "../global/player";
+import Deposit from "../components/Deposit";
+import Withdraw from "../components/Withdraw";
 
 interface Props {
   Component: NextComponentType<NextPageContext, any, {}>;
@@ -31,11 +33,11 @@ interface State {
   loader: boolean;
   playerInfo: Player;
   playerInfoActivated: boolean;
+  depositTab: boolean;
+  withdrawTab: boolean;
 }
 class App extends React.Component<Props, State> {
-  //new
-  address = "0x78CaeACcB2bBf60Ae6fB4176D1Ac2a974aE4E9F2";
-  // address = "0x492EF725aE62A74922C9aC08FD41f98774DfaAB4";
+  address = "0x2e1284aDa02F092a6756999D6B2e2D0a942888D8";
   constructor(props: Props) {
     super(props);
     const emptyContract = new ethers.Contract(
@@ -63,13 +65,17 @@ class App extends React.Component<Props, State> {
         suitablePositions: [],
       },
       playerInfoActivated: false,
+      depositTab: false,
+      withdrawTab: false,
     };
   }
 
   async withdraw(amount: number) {
     const provider: ethers.providers.Web3Provider = (window as any).provider;
     const signer = provider.getSigner();
-    const tx = await this.state.futNFT.connect(signer).withdraw(amount);
+    const tx = await this.state.futNFT
+      .connect(signer)
+      .withdraw(ethers.utils.formatUnits(amount.toString(), "ether"));
     await tx.wait();
   }
 
@@ -363,17 +369,39 @@ class App extends React.Component<Props, State> {
       };
       await this.state.futNFT.connect(signer).mint(player22);
       // setTimeout(async () => {
-      //   await this.state.futNFTTransfer.connect(signer).list(2, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(4, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(6, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(8, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(10, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(12, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(14, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(16, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(18, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(20, 0.001);
-      //   await this.state.futNFTTransfer.connect(signer).list(22, 0.001);
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(2, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(4, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(6, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(8, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(10, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(12, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(14, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(16, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(18, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(20, ethers.BigNumber.from(0.001));
+      //   await this.state.futNFTTransfer
+      //     .connect(signer)
+      //     .list(22, ethers.BigNumber.from(0.001));
       // }, 10000);
     }
     // else {
@@ -540,6 +568,13 @@ class App extends React.Component<Props, State> {
   setPlayerInfoActivated = (activated: boolean) =>
     this.setState({ playerInfoActivated: activated });
 
+  setDepositTab = (depositTab: boolean) =>
+    this.setState({ depositTab: depositTab });
+
+  setWithdrawTab = (withdrawTab: boolean) => {
+    this.setState({ withdrawTab: withdrawTab });
+  };
+
   render() {
     return (
       <>
@@ -550,11 +585,13 @@ class App extends React.Component<Props, State> {
           account={this.state.account}
           blockchainDataLoaded={this.state.blockchainDataLoaded}
           futNFTMatch={this.state.futNFTMatch}
+          setDepositTab={this.setDepositTab}
+          setWithdrawTab={this.setWithdrawTab}
         />
         {this.state.loader && <Loader />}
         <Alert
           message="Some Error Occurred!"
-          okEnabled={false}
+          okEnabled={true}
           id="errorAlert"
         />
         <Alert
@@ -567,6 +604,23 @@ class App extends React.Component<Props, State> {
           message="Cannot play! First buy enough players"
           okEnabled={true}
         />
+        {this.state.depositTab && (
+          <Deposit
+            setDepositTab={this.setDepositTab}
+            futNFTMatch={this.state.futNFTMatch}
+            setLoader={this.setLoader}
+            account={this.state.account}
+            setWithdrawTab={this.setWithdrawTab}
+          />
+        )}
+        {this.state.withdrawTab && (
+          <Withdraw
+            account={this.state.account}
+            futNFTMatch={this.state.futNFTMatch}
+            setLoader={this.setLoader}
+            setWithdrawTab={this.setWithdrawTab}
+          />
+        )}
         {this.state.playerInfoActivated && (
           <PlayerInformation
             player={this.state.playerInfo}

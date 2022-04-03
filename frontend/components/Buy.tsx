@@ -4,7 +4,6 @@ import { Player } from "./Player";
 import { Player as PlayerInterface } from "../global/player";
 import { ethers } from "ethers";
 import Confirm from "./Confirm";
-import Search from "./Search";
 import Filter from "./Filter";
 
 interface Props {
@@ -53,15 +52,17 @@ export class Buy extends Component<Props, State> {
   getListedPlayers = async () => {
     try {
       this.props.setLoader(true);
-      const listedPlayerIds: PlayerInterface[] =
+      const listedPlayerIds: number[] =
         await this.props.futNFT.getListedPlayers();
       const listedPlayers: PlayerInterface[] = [];
       const owners: string[] = [];
       listedPlayerIds.forEach(async (playerId) => {
-        const player = await this.props.futNFT.getPlayer(playerId);
-        const owner = await this.props.futNFT.ownerOf(playerId);
-        owners.push(owner);
-        listedPlayers.push(player);
+        if (playerId.toString() !== "0") {
+          const player = await this.props.futNFT.getPlayer(playerId);
+          const owner = await this.props.futNFT.ownerOf(playerId);
+          owners.push(owner);
+          listedPlayers.push(player);
+        }
       });
       // const player: PlayerInterface = {
       //   id: 2,
@@ -140,43 +141,47 @@ export class Buy extends Component<Props, State> {
       await this.getListedPlayers();
       if (name.length > 0) {
         setTimeout(() => {
-          const search = (
-            document.getElementById("buySearch")! as HTMLInputElement
-          ).value;
-
+          const search = name;
           const newPlayers = this.state.listedPlayers.filter((player) =>
             player.name.toLowerCase().includes(search.toLowerCase())
           );
           this.setState({ listedPlayers: newPlayers });
+          this.props.setLoader(false);
         }, 1500);
       }
       if (minLevel > 0 || maxLevel > 0) {
-        const newPlayers = this.state.listedPlayers.filter((player) => {
-          if (minLevel > 0 && maxLevel > 0 && maxLevel >= minLevel) {
-            return player.level >= minLevel && player.level <= maxLevel;
-          } else if (minLevel > 0 && maxLevel === 0) {
-            return player.level >= minLevel;
-          } else if (minLevel === 0 && maxLevel > 0) {
-            return player.level <= maxLevel;
-          }
-          return true;
-        });
-        this.setState({ listedPlayers: newPlayers });
+        setTimeout(() => {
+          const newPlayers = this.state.listedPlayers.filter((player) => {
+            if (minLevel > 0 && maxLevel > 0 && maxLevel >= minLevel) {
+              return player.level >= minLevel && player.level <= maxLevel;
+            } else if (minLevel > 0 && maxLevel === 0) {
+              return player.level >= minLevel;
+            } else if (minLevel === 0 && maxLevel > 0) {
+              return player.level <= maxLevel;
+            }
+            return true;
+          });
+          this.setState({ listedPlayers: newPlayers });
+          this.props.setLoader(false);
+        }, 1500);
       }
-      if (minPrice > 0 && maxPrice > 0) {
-        const newPlayers = this.state.listedPlayers.filter(async (player) => {
-          const price: bigint =
-            await this.props.futNFTTransfer.listedPlayersPrices(player.id);
-          if (minPrice > 0 && maxPrice > 0 && maxPrice >= minPrice) {
-            return price >= minPrice && price <= maxPrice;
-          } else if (minPrice > 0 && maxPrice === 0) {
-            return price >= minPrice;
-          } else if (minPrice === 0 && maxPrice > 0) {
-            return price <= maxPrice;
-          }
-          return true;
-        });
-        this.setState({ listedPlayers: newPlayers });
+      if (minPrice > 0 || maxPrice > 0) {
+        setTimeout(() => {
+          const newPlayers = this.state.listedPlayers.filter(async (player) => {
+            const price: bigint =
+              await this.props.futNFTTransfer.listedPlayersPrices(player.id);
+            if (minPrice > 0 && maxPrice > 0 && maxPrice >= minPrice) {
+              return price >= minPrice && price <= maxPrice;
+            } else if (minPrice > 0 && maxPrice === 0) {
+              return price >= minPrice;
+            } else if (minPrice === 0 && maxPrice > 0) {
+              return price <= maxPrice;
+            }
+            return true;
+          });
+          this.setState({ listedPlayers: newPlayers });
+          console.log(this.state.listedPlayers);
+        }, 1500);
       }
     } catch (err) {
       document.getElementById("errorAlert")!.style.display = "inline-block";
@@ -191,25 +196,6 @@ export class Buy extends Component<Props, State> {
           handleClick={this.applyFilters}
           futNFTTraining={this.props.futNFTTraining}
           priceEnabled={true}
-        />
-        <Search
-          id="buySearch"
-          handleClick={async () => {
-            await this.getListedPlayers();
-            this.props.setLoader(true);
-            setTimeout(() => {
-              const search = (
-                document.getElementById("buySearch")! as HTMLInputElement
-              ).value;
-              if (search != "") {
-                const newPlayers = this.state.listedPlayers.filter((player) =>
-                  player.name.toLowerCase().includes(search.toLowerCase())
-                );
-                this.setState({ listedPlayers: newPlayers });
-              }
-              this.props.setLoader(false);
-            }, 1500);
-          }}
         />
         {this.state.conform && (
           <Confirm
