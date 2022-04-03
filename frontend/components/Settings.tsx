@@ -23,9 +23,9 @@ export const Settings: React.FunctionComponent<Props> = ({
 
   const [formation, setFormation] = useState<string>("");
   const [positions, setPositions] = useState<string[]>([]);
-  const [signer, _] = useState<ethers.Signer>(
-    (window as any).provider.getSigner()
-  );
+  // const [signer, _] = useState<ethers.Signer>(
+  //   (window as any).provider.getSigner()
+  // );
   return (
     <div className={settingsStyles.settingsContainer}>
       <h2>Mint New NFTs</h2>
@@ -46,6 +46,9 @@ export const Settings: React.FunctionComponent<Props> = ({
         <button
           className={settingsStyles.setBtn}
           onClick={async () => {
+            const provider: ethers.providers.Web3Provider = (window as any)
+              .provider;
+            const signer = provider.getSigner();
             await setValue(
               futNFTTraining.connect(signer).setCooldown,
               parseInt(
@@ -69,6 +72,9 @@ export const Settings: React.FunctionComponent<Props> = ({
         <button
           className={settingsStyles.setBtn}
           onClick={async () => {
+            const provider: ethers.providers.Web3Provider = (window as any)
+              .provider;
+            const signer = provider.getSigner();
             await setValue(
               futNFTTraining.connect(signer).setFee,
               parseInt(
@@ -92,6 +98,9 @@ export const Settings: React.FunctionComponent<Props> = ({
         <button
           className={settingsStyles.setBtn}
           onClick={async () => {
+            const provider: ethers.providers.Web3Provider = (window as any)
+              .provider;
+            const signer = provider.getSigner();
             await setValue(
               futNFTTraining.connect(signer).setMaxLevel,
               parseInt(
@@ -118,6 +127,9 @@ export const Settings: React.FunctionComponent<Props> = ({
         <button
           className={settingsStyles.setBtn}
           onClick={async () => {
+            const provider: ethers.providers.Web3Provider = (window as any)
+              .provider;
+            const signer = provider.getSigner();
             await setValue(
               futNFTMatch.connect(signer).setLevelPercentSuitablePosition,
               parseInt(
@@ -145,6 +157,9 @@ export const Settings: React.FunctionComponent<Props> = ({
         <button
           className={settingsStyles.setBtn}
           onClick={async () => {
+            const provider: ethers.providers.Web3Provider = (window as any)
+              .provider;
+            const signer = provider.getSigner();
             await setValue(
               futNFTMatch.connect(signer).setLevelPercentNoPosition,
               parseInt(
@@ -172,6 +187,9 @@ export const Settings: React.FunctionComponent<Props> = ({
         <button
           className={settingsStyles.setBtn}
           onClick={async () => {
+            const provider: ethers.providers.Web3Provider = (window as any)
+              .provider;
+            const signer = provider.getSigner();
             await setValue(
               futNFTMatch.connect(signer).setLineupFee,
               parseInt(
@@ -196,6 +214,9 @@ export const Settings: React.FunctionComponent<Props> = ({
         <button
           className={settingsStyles.setBtn}
           onClick={async () => {
+            const provider: ethers.providers.Web3Provider = (window as any)
+              .provider;
+            const signer = provider.getSigner();
             await setValue(
               futNFTMatch.connect(signer).setMatchFee,
               parseInt(

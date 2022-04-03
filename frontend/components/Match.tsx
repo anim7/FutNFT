@@ -463,11 +463,11 @@ class Match extends Component<PropsWithRouter, State> {
                       const matchFee = await this.props.futNFTMatch.matchFee();
                       const tx = await this.props.futNFTMatch
                         .connect(signer)
-                        .play
-                        // value: matchFee,
-                        // gasLimit: 2000000,
-                        // gasPrice: 30000000000,
-                        ();
+                        .play({
+                          // value: matchFee,
+                          gasLimit: 2000000,
+                          gasPrice: 30000000000,
+                        });
                       await tx.wait();
                     } catch (err) {
                       console.error(err);
